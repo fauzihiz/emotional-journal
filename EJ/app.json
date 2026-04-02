@@ -22,8 +22,14 @@
       "predictiveBackGestureEnabled": false
     },
     "web": {
+      "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/favicon.png",
+      "name": "Jurnal Emosi",
+      "shortName": "Jurnal",
+      "themeColor": "#3B82F6",
+      "backgroundColor": "#F8FAFC",
+      "display": "standalone"
     },
     "plugins": [
       "expo-router",

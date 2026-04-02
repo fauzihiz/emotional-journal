@@ -39,21 +39,27 @@ Kami menggunakan 8 kategori emosi yang seimbang berdasarkan intensitas dan valen
 - [x] Fitur "Tambah Entri" via tombol "+" dan Quick-Log Form yang responsif.
 - [x] Pop-up "Jurnal Hari Ini" untuk membaca history deksripsi *(Expandable Text)*.
 - [x] Proteksi cerdas (mencegah curi start mencatat tanggal masa depan).
-- [x] Dukungan *Backdate* (Mencatat tanggal sebelumnya).
+- [x] Galaxy Mesh (soft gradients) untuk multi-mood days. ✨
 
-### Fase 3: Offline & Performa (v1.1)
+### Fase 3: Distribusi & Mobile Build (PWA & APK) 🚧
+- [x] Setup deployment ke Vercel (Web Hosting).
+- [x] Optimasi PWA (Add to Home Screen).
+- [ ] Setup EAS Build untuk Android APK.
+- [ ] Uji coba Google Auth di perangkat fisik.
+
+### Fase 4: Offline & Performa (v1.1)
 - [ ] Implementasi React Query Persistence.
 - [ ] Optimasi *Fetching* bulanan (Hanya ambil data bulan aktif).
 - [ ] UI/UX Polishing (Animasi & Micro-interactions).
 
-### Fase 4: Insight & Analisis (v2.0+)
+### Fase 5: Insight & Analisis (v2.0+)
 - [ ] Statistik bulanan/tahunan.
 - [ ] Notifikasi pengingat harian.
 
 ## ⚠️ Known Issues (TODO)
 - [ ] **Google Auth**: OAuth redirect flow belum berfungsi di web. Perlu ditest di Expo Go (mobile).
 - [ ] **Email Confirmation**: Saat ini dimatikan untuk development. Harus diaktifkan kembali sebelum production.
-- [ ] **Expo Go di HP**: Belum ditest — loading lama saat pertama kali bundle.
+- [ ] **EAS CLI**: Memerlukan instalasi global (`npm install -g eas-cli`).
 
 ## 📂 Struktur Folder
 - `EJ/app/` — Struktur navigasi Expo Router.
@@ -62,3 +68,4 @@ Kami menggunakan 8 kategori emosi yang seimbang berdasarkan intensitas dan valen
 - `EJ/lib/` — Konfigurasi Supabase client.
 - `EJ/store/` — Zustand stores (auth, UI state).
 - `EJ/supabase/` — SQL script untuk skema database.
+- `EJ/vercel.json` — Konfigurasi routing untuk Vercel.

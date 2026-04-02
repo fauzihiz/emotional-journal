@@ -8,14 +8,18 @@ export interface Emotion {
 }
 
 export const EMOTIONS: Emotion[] = [
-  { id: 1, label: 'Semangat', weight: 8, color: '#FFD700', emoji: '🔥' },
-  { id: 2, label: 'Bahagia',  weight: 7, color: '#32CD32', emoji: '😊' },
-  { id: 3, label: 'Tenang',   weight: 6, color: '#87CEEB', emoji: '😌' },
-  { id: 4, label: 'Berani',   weight: 5, color: '#FFA500', emoji: '💪' },
-  { id: 5, label: 'Bosan',    weight: 4, color: '#A9A9A9', emoji: '😐' },
-  { id: 6, label: 'Sedih',    weight: 3, color: '#1E90FF', emoji: '😢' },
-  { id: 7, label: 'Kecewa',   weight: 2, color: '#800080', emoji: '😞' },
-  { id: 8, label: 'Marah',    weight: 1, color: '#FF4500', emoji: '😡' },
+  { id: 1,  label: 'Marah',    weight: 1,  color: '#EF4444', emoji: '😡' },
+  { id: 2,  label: 'Takut',    weight: 2,  color: '#475569', emoji: '😨' },
+  { id: 3,  label: 'Cemas',    weight: 3,  color: '#8B5CF6', emoji: '😰' },
+  { id: 4,  label: 'Sedih',    weight: 4,  color: '#3B82F6', emoji: '😢' },
+  { id: 5,  label: 'Kecewa',   weight: 5,  color: '#6B21A8', emoji: '😞' },
+  { id: 6,  label: 'Bosan',    weight: 6,  color: '#94A3B8', emoji: '😐' },
+  { id: 7,  label: 'Tenang',   weight: 7,  color: '#2DD4BF', emoji: '😌' },
+  { id: 8,  label: 'Bahagia',  weight: 8,  color: '#4ADE80', emoji: '😊' },
+  { id: 9,  label: 'Syukur',   weight: 9,  color: '#FACC15', emoji: '🙏' },
+  { id: 10, label: 'Berani',   weight: 10, color: '#FB923C', emoji: '💪' },
+  { id: 11, label: 'Semangat', weight: 11, color: '#F59E0B', emoji: '🔥' },
+  { id: 12, label: 'Yakin',    weight: 12, color: '#10B981', emoji: '✨' },
 ];
 
 export const getEmotionById = (id: number): Emotion | undefined =>

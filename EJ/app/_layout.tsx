@@ -1,9 +1,11 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Slot, useRouter, useSegments } from 'expo-router';
+import Head from 'expo-router/head';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Platform } from 'react-native';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { supabase } from '@/lib/supabase';
@@ -20,7 +22,7 @@ export default function RootLayout() {
   // 1. Initialize auth state on mount
   useEffect(() => {
     // PWA Service Worker registration for WEB
-    if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+    if (Platform.OS === 'web' && 'serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js').then(
           (registration) => console.log('SW registered: ', registration.scope),
@@ -63,6 +65,13 @@ export default function RootLayout() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+        <Head>
+          <title>Jurnal Emosi</title>
+          <meta name="description" content="Catat perasaanmu, temukan dirimu." />
+          <meta name="theme-color" content="#3B82F6" />
+          <link rel="manifest" href="/manifest.json" />
+          <link rel="apple-touch-icon" href="/icon-192.png" />
+        </Head>
         <Slot />
         <StatusBar style="auto" />
       </ThemeProvider>

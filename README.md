@@ -15,15 +15,19 @@ Memberikan pengalaman mencatat emosi yang tanpa hambatan (*frictionless*) dan be
 - **Icons**: `@expo/vector-icons` (Ionicons)
 
 ## 📊 Model Emosi (Bahasa Indonesia)
-Kami menggunakan 8 kategori emosi yang seimbang berdasarkan intensitas dan valensi:
-1. **Semangat** (Energi Tinggi, Positif) — 🟡 Gold
-2. **Bahagia** (Sangat Positif) — 🟢 Lime Green
-3. **Tenang** (Damai, Positif) — 🔵 Sky Blue
-4. **Berani** (Percaya Diri, Netral-Positif) — 🟠 Orange
-5. **Bosan** (Energi Rendah, Netral-Negatif) — ⚫ Gray
-6. **Sedih** (Negatif) — 🔷 Dodger Blue
-7. **Kecewa** (Kurang Puas, Negatif) — 🟣 Purple
-8. **Marah** (Frustrasi/Energi Tinggi, Negatif) — 🔴 Orange Red
+Kami menggunakan 12 kategori emosi dengan spektrum warna gradasi:
+1. **Marah** 😡 — Red
+2. **Takut** 😨 — Slate
+3. **Cemas** 😰 — Violet
+4. **Sedih** 😢 — Blue
+5. **Kecewa** 😞 — Purple
+6. **Bosan** 😐 — Gray
+7. **Tenang** 😌 — Teal
+8. **Bahagia** 😊 — Green
+9. **Syukur** 🙏 — Yellow
+10. **Berani** 💪 — Orange
+11. **Semangat** 🔥 — Amber
+12. **Yakin** ✨ — Emerald
 
 ## 🗺️ Roadmap Pengembangan
 

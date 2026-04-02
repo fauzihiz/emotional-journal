@@ -1,15 +1,89 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
+import React, { useState, useMemo } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ActivityIndicator } from 'react-native';
 import { supabase } from '@/lib/supabase';
 import { useAuthStore } from '@/store/authStore';
 import { Ionicons } from '@expo/vector-icons';
+import HeatmapCalendar from '@/components/HeatmapCalendar';
+import QuickLogModal from '@/components/QuickLogModal';
+import DayDetailModal from '@/components/DayDetailModal';
+import { useMonthEntries } from '@/hooks/useEntries';
 
 export default function DashboardScreen() {
-  const { user, session, signOut } = useAuthStore();
+  const { user, signOut } = useAuthStore();
+  
+  const today = new Date();
+  const [currentYear, setCurrentYear] = useState(today.getFullYear());
+  const [currentMonth, setCurrentMonth] = useState(today.getMonth() + 1);
+  
+  // States for modals
+  const [quickLogVisible, setQuickLogVisible] = useState(false);
+  const [detailVisible, setDetailVisible] = useState(false);
+  const [selectedDateStr, setSelectedDateStr] = useState('');
+
+  // Fetch entries
+  const { data: entries, isLoading, error } = useMonthEntries(currentYear, currentMonth);
+
+  // Helper to get entries for a specific date
+  const getEntriesForDate = (dateStr: string) => {
+    if (!entries) return [];
+    return entries.filter((e) => e.entry_date === dateStr);
+  };
+
+  const selectedDateEntries = useMemo(() => {
+    return getEntriesForDate(selectedDateStr);
+  }, [entries, selectedDateStr]);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     signOut();
+  };
+
+  const handlePrevMonth = () => {
+    if (currentMonth === 1) {
+      setCurrentMonth(12);
+      setCurrentYear((y) => y - 1);
+    } else {
+      setCurrentMonth((m) => m - 1);
+    }
+  };
+
+  const handleNextMonth = () => {
+    if (currentMonth === 12) {
+      setCurrentMonth(1);
+      setCurrentYear((y) => y + 1);
+    } else {
+      setCurrentMonth((m) => m + 1);
+    }
+  };
+
+  // When a day on the calendar is pressed
+  const handleDayPress = (dateStr: string) => {
+    setSelectedDateStr(dateStr);
+    const dayEntries = getEntriesForDate(dateStr);
+    
+    if (dayEntries.length === 0) {
+      // Frictionless: Empty day goes straight to Add Log
+      setQuickLogVisible(true);
+    } else {
+      // Show details for the day
+      setDetailVisible(true);
+    }
+  };
+
+  // When FAB "+" is pressed (always means Add for Today)
+  const handleAddToday = () => {
+    const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    setSelectedDateStr(todayStr);
+    setQuickLogVisible(true);
+  };
+
+  // When user clicks "Tambah" from inside the Detail Modal
+  const handleAddFromDetail = () => {
+    setDetailVisible(false);
+    // Add small delay to avoid layered modal overlapping on mobile devices
+    setTimeout(() => {
+      setQuickLogVisible(true);
+    }, 150);
   };
 
   return (
@@ -25,21 +99,49 @@ export default function DashboardScreen() {
           </TouchableOpacity>
         </View>
 
-        <View style={styles.placeholderCard}>
-          <Ionicons name="grid-outline" size={48} color="#94A3B8" />
-          <Text style={styles.placeholderTitle}>Heatmap akan ada di sini</Text>
-          <Text style={styles.placeholderSubtitle}>
-            Mulai mencatat emosimu setiap hari untuk melihat pola kebahagiaanmu.
-          </Text>
-        </View>
-
-        <TouchableOpacity 
-          style={styles.fab}
-          onPress={() => alert('Fitur catat emosi akan segera hadir!')}
-        >
-          <Text style={styles.fabText}>+</Text>
-        </TouchableOpacity>
+        {isLoading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#3B82F6" />
+          </View>
+        ) : error ? (
+          <View style={styles.errorContainer}>
+            <Text style={styles.errorText}>Gagal memuat data calendar.</Text>
+          </View>
+        ) : (
+          <HeatmapCalendar
+            year={currentYear}
+            month={currentMonth}
+            entries={entries || []}
+            onDayPress={handleDayPress}
+            onPrevMonth={handlePrevMonth}
+            onNextMonth={handleNextMonth}
+          />
+        )}
       </View>
+
+      {/* FAB */}
+      <TouchableOpacity 
+        style={styles.fab}
+        onPress={handleAddToday}
+      >
+        <Ionicons name="add" size={32} color="#fff" />
+      </TouchableOpacity>
+
+      {/* Detail Modal */}
+      <DayDetailModal
+        visible={detailVisible}
+        dateStr={selectedDateStr}
+        entries={selectedDateEntries}
+        onClose={() => setDetailVisible(false)}
+        onAddEntry={handleAddFromDetail}
+      />
+
+      {/* Write Note Modal */}
+      <QuickLogModal
+        visible={quickLogVisible}
+        dateStr={selectedDateStr}
+        onClose={() => setQuickLogVisible(false)}
+      />
     </SafeAreaView>
   );
 }
@@ -52,12 +154,14 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     padding: 24,
+    paddingBottom: 100, // Make room for FAB
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 32,
+    marginBottom: 24,
+    marginTop: 20, 
   },
   welcome: {
     fontSize: 16,
@@ -73,31 +177,19 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: '#FEE2E2',
   },
-  placeholderCard: {
+  loadingContainer: {
     flex: 1,
-    backgroundColor: '#fff',
-    borderRadius: 24,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    borderStyle: 'dashed',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 40,
-    marginBottom: 80,
   },
-  placeholderTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#334155',
-    marginTop: 24,
-    textAlign: 'center',
+  errorContainer: {
+    padding: 16,
+    backgroundColor: '#FEE2E2',
+    borderRadius: 12,
   },
-  placeholderSubtitle: {
-    fontSize: 14,
-    color: '#64748B',
+  errorText: {
+    color: '#DC2626',
     textAlign: 'center',
-    marginTop: 8,
-    lineHeight: 20,
   },
   fab: {
     position: 'absolute',
@@ -114,10 +206,5 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
-  },
-  fabText: {
-    color: '#fff',
-    fontSize: 32,
-    fontWeight: '300',
   },
 });

@@ -26,7 +26,7 @@ interface Props {
 export default function QuickLogModal({ visible, dateStr, onClose }: Props) {
   const [selectedEmotion, setSelectedEmotion] = useState<Emotion | null>(null);
   const [note, setNote] = useState('');
-  
+
   const createEntryMutation = useCreateEntry();
 
   // Reset state when modal opens
@@ -59,10 +59,10 @@ export default function QuickLogModal({ visible, dateStr, onClose }: Props) {
   const displayDate = isNaN(dateObj.getTime())
     ? dateStr
     : dateObj.toLocaleDateString('id-ID', {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric',
-      });
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    });
 
   return (
     <Modal visible={visible} transparent animationType="slide">
@@ -71,12 +71,12 @@ export default function QuickLogModal({ visible, dateStr, onClose }: Props) {
         style={styles.overlay}
       >
         {/* Clickable backdrop to close the modal */}
-        <TouchableOpacity 
-          style={{ flex: 1, width: '100%' }} 
-          onPress={onClose} 
-          activeOpacity={1} 
+        <TouchableOpacity
+          style={{ flex: 1, width: '100%' }}
+          onPress={onClose}
+          activeOpacity={1}
         />
-        
+
         {/* Actual Form Container */}
         <View style={styles.container}>
           <View style={styles.header}>
@@ -93,10 +93,10 @@ export default function QuickLogModal({ visible, dateStr, onClose }: Props) {
           />
 
           <View style={styles.noteContainer}>
-            <Text style={styles.noteLabel}>Catatan (Opsional)</Text>
+            <Text style={styles.noteLabel}>Apa yang kamu rasakan saat ini?</Text>
             <TextInput
               style={styles.noteInput}
-              placeholder="Ceritakan kejadian hari ini..."
+              placeholder="Yuk ceritakan kejadian hari ini..."
               value={note}
               onChangeText={setNote}
               multiline
@@ -127,7 +127,7 @@ export default function QuickLogModal({ visible, dateStr, onClose }: Props) {
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(15, 23, 42, 0.6)', 
+    backgroundColor: 'rgba(15, 23, 42, 0.6)',
     justifyContent: 'flex-end',
   },
   container: {

@@ -48,8 +48,8 @@ Kami menggunakan 12 kategori emosi dengan spektrum warna gradasi:
 ### Fase 3: Distribusi & Mobile Build (PWA & APK) 🚧
 - [x] Setup deployment ke Vercel (Web Hosting).
 - [x] Optimasi PWA (Add to Home Screen).
+- [x] Integrasi Google Auth (Web & Native Support).
 - [ ] Setup EAS Build untuk Android APK.
-- [ ] Uji coba Google Auth di perangkat fisik.
 
 ### Fase 4: Offline & Performa (v1.1)
 - [ ] Implementasi React Query Persistence.
@@ -60,16 +60,41 @@ Kami menggunakan 12 kategori emosi dengan spektrum warna gradasi:
 - [ ] Statistik bulanan/tahunan.
 - [ ] Notifikasi pengingat harian.
 
+## 🛠️ Solusi Kendala Teknis (Troubleshooting)
+
+Berikut adalah ringkasan masalah teknis yang dihadapi selama pengembangan dan cara penyelesaiannya:
+
+### 1. Google OAuth Redirect Loop (Vercel)
+- **Kendala**: Setelah login Google, pengguna terlempar kembali ke `localhost:8081` atau tertahan di halaman login.
+- **Solusi**: 
+    - Menggunakan `window.location.origin` secara dinamis pada parameter `redirectTo` di `signInWithOAuth`.
+    - Mengaktifkan `detectSessionInUrl: true` pada konfigurasi Supabase Client.
+    - Menambahkan domain Vercel (contoh: `https://your-app.vercel.app/**`) ke dalam **Redirect URLs** di Dashboard Supabase.
+
+### 2. Error: "Unable to exchange external code"
+- **Kendala**: Supabase gagal menukar Kode OAuth dari Google menjadi sesi aktif.
+- **Solusi**: 
+    - Memastikan tipe kredensial di Google Cloud Console adalah **Web Application** (bukan Android/iOS) dan menyamakan `Client Secret` di dashboard Supabase.
+    - Memastikan di Dashboard Supabase untuk provider Google, Client ID dan Client Secret sudah benar sesuai yang diberikan Google Cloud Console.
+
+### 3. Tombol "Add to Home Screen" PWA Tidak Muncul
+- **Kendala**: Browser tidak mendeteksi aplikasi sebagai PWA yang valid pada build produksi Expo.
+- **Solusi**: 
+    - Membuat template kustom `web/index.html` untuk memaksakan injeksi `<link rel="manifest">`.
+    - Menyediakan file `public/manifest.json` dan `public/sw.js` secara manual agar disalin ke folder `dist/` saat ekspor.
+
+### 4. Sinkronisasi Model Emosi & Database
+- **Kendala**: Menambahkan emosi baru menyebabkan error *Foreign Key* atau salah warna pada data lama.
+- **Solusi**: Melakukan `TRUNCATE emotions CASCADE` dan melakukan *re-seed* data 12 emosi baru agar ID dan urutan gradasi warna sinkron antara kode aplikasi dan database.
+
 ## ⚠️ Known Issues (TODO)
-- [ ] **Google Auth**: OAuth redirect flow belum berfungsi di web. Perlu ditest di Expo Go (mobile).
 - [ ] **Email Confirmation**: Saat ini dimatikan untuk development. Harus diaktifkan kembali sebelum production.
 - [ ] **EAS CLI**: Memerlukan instalasi global (`npm install -g eas-cli`).
 
 ## 📂 Struktur Folder
 - `EJ/app/` — Struktur navigasi Expo Router.
-- `EJ/app/(auth)/` — Halaman login/register.
-- `EJ/app/(app)/` — Halaman utama (dashboard, dll).
+- `EJ/public/` — Aset PWA (Manifest, SW, Icons).
+- `EJ/web/` — Template HTML kustom untuk build web.
 - `EJ/lib/` — Konfigurasi Supabase client.
 - `EJ/store/` — Zustand stores (auth, UI state).
 - `EJ/supabase/` — SQL script untuk skema database.
-- `EJ/vercel.json` — Konfigurasi routing untuk Vercel.

@@ -10,16 +10,27 @@ const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || '';
 const isWeb = Platform.OS === 'web';
 const safeStorage = {
   getItem: (key: string) => {
-    if (isWeb && typeof window === 'undefined') return null;
+    if (isWeb) {
+      if (typeof window === 'undefined') return null;
+      return window.localStorage.getItem(key);
+    }
     return AsyncStorage.getItem(key);
   },
   setItem: (key: string, value: string) => {
-    if (isWeb && typeof window === 'undefined') return;
+    if (isWeb) {
+      if (typeof window === 'undefined') return;
+      window.localStorage.setItem(key, value);
+      return;
+    }
     return AsyncStorage.setItem(key, value);
   },
   removeItem: (key: string) => {
-    if (isWeb && typeof window === 'undefined') return;
-    return AsyncStorage.setItem(key, ''); // Workaround for AsyncStorage
+    if (isWeb) {
+      if (typeof window === 'undefined') return;
+      window.localStorage.removeItem(key);
+      return;
+    }
+    return AsyncStorage.removeItem(key); // Fixed from AsyncStorage.setItem(key, '')
   },
 };
 

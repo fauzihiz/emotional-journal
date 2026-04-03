@@ -85,40 +85,51 @@ export default function LoginScreen() {
 
   const handleGoogleSignIn = async () => {
     setLoading(true);
+    setError('');
     try {
-      const redirectUri = AuthSession.makeRedirectUri({
-        scheme: 'ej', // Match your app.json scheme
-        path: 'auth-callback',
-      });
+      if (Platform.OS === 'web') {
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: {
+            redirectTo: window.location.origin,
+          },
+        });
+        if (error) throw error;
+      } else {
+        const redirectUri = AuthSession.makeRedirectUri({
+          scheme: 'ej',
+          path: 'auth-callback',
+        });
 
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: redirectUri,
-          skipBrowserRedirect: true,
-        },
-      });
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: {
+            redirectTo: redirectUri,
+            skipBrowserRedirect: true,
+          },
+        });
 
-      if (error) throw error;
+        if (error) throw error;
 
-      const res = await WebBrowser.openAuthSessionAsync(data.url, redirectUri);
+        const res = await WebBrowser.openAuthSessionAsync(data.url, redirectUri);
 
-      if (res.type === 'success' && res.url) {
-        // Extract tokens from the URL fragment
-        const url = new URL(res.url);
-        const params = new URLSearchParams(url.hash.substring(1));
-        const access_token = params.get('access_token');
-        const refresh_token = params.get('refresh_token');
+        if (res.type === 'success' && res.url) {
+          const url = new URL(res.url);
+          const params = new URLSearchParams(url.hash.substring(1));
+          const access_token = params.get('access_token');
+          const refresh_token = params.get('refresh_token');
 
-        if (access_token && refresh_token) {
-          const { error: sessionError } = await supabase.auth.setSession({
-            access_token,
-            refresh_token,
-          });
-          if (sessionError) throw sessionError;
+          if (access_token && refresh_token) {
+            const { error: sessionError } = await supabase.auth.setSession({
+              access_token,
+              refresh_token,
+            });
+            if (sessionError) throw sessionError;
+          }
         }
       }
     } catch (error: any) {
+      console.error('Google Sign-In Error:', error);
       setError(error.message);
     } finally {
       setLoading(false);

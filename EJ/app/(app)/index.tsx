@@ -86,22 +86,30 @@ export default function DashboardScreen() {
     }, 150);
   };
 
+  const getGreeting = () => {
+    const hour = today.getHours();
+    if (hour < 11) return 'Selamat Pagi,';
+    if (hour < 15) return 'Selamat Siang,';
+    if (hour < 18) return 'Selamat Sore,';
+    return 'Selamat Malam,';
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
         <View style={styles.header}>
           <View>
-            <Text style={styles.welcome}>Halo,</Text>
-            <Text style={styles.email}>{user?.email}</Text>
+            <Text style={styles.welcome}>{getGreeting()}</Text>
+            <Text style={styles.email}>{user?.email?.split('@')[0] || 'Teman'}</Text>
           </View>
           <TouchableOpacity onPress={handleSignOut} style={styles.logoutButton}>
-            <Ionicons name="log-out-outline" size={20} color="#EF4444" />
+            <Ionicons name="log-out-outline" size={20} color="#64748B" />
           </TouchableOpacity>
         </View>
 
         {isLoading ? (
           <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#3B82F6" />
+            <ActivityIndicator size="large" color="#4F46E5" />
           </View>
         ) : error ? (
           <View style={styles.errorContainer}>
@@ -123,8 +131,9 @@ export default function DashboardScreen() {
       <TouchableOpacity 
         style={styles.fab}
         onPress={handleAddToday}
+        activeOpacity={0.8}
       >
-        <Ionicons name="add" size={32} color="#fff" />
+        <Ionicons name="pencil" size={28} color="#fff" />
       </TouchableOpacity>
 
       {/* Detail Modal */}
@@ -149,7 +158,7 @@ export default function DashboardScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: '#FDFBF7', // Warmer background
   },
   content: {
     flex: 1,
@@ -160,22 +169,30 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 24,
+    marginBottom: 32,
     marginTop: 20, 
   },
   welcome: {
     fontSize: 16,
     color: '#64748B',
+    marginBottom: 4,
   },
   email: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#0F172A',
+    fontSize: 24,
+    fontWeight: '800',
+    color: '#1E293B',
+    letterSpacing: -0.5,
+    textTransform: 'capitalize',
   },
   logoutButton: {
-    padding: 8,
-    borderRadius: 8,
-    backgroundColor: '#FEE2E2',
+    padding: 12,
+    borderRadius: 16,
+    backgroundColor: '#ffffff',
+    shadowColor: '#94A3B8',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 2,
   },
   loadingContainer: {
     flex: 1,
@@ -185,7 +202,7 @@ const styles = StyleSheet.create({
   errorContainer: {
     padding: 16,
     backgroundColor: '#FEE2E2',
-    borderRadius: 12,
+    borderRadius: 16,
   },
   errorText: {
     color: '#DC2626',
@@ -193,18 +210,18 @@ const styles = StyleSheet.create({
   },
   fab: {
     position: 'absolute',
-    right: 24,
-    bottom: 24,
+    right: 28,
+    bottom: 32,
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: '#3B82F6',
+    backgroundColor: '#4F46E5', // Warm Indigo
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 4,
-    shadowColor: '#3B82F6',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
+    elevation: 6,
+    shadowColor: '#4F46E5',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.4,
+    shadowRadius: 12,
   },
 });

@@ -174,31 +174,37 @@ export default function HeatmapCalendar({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
-    borderRadius: 20,
-    padding: 16,
+    backgroundColor: '#ffffff',
+    borderRadius: 24, // softer overall container
+    padding: 20,
     marginBottom: 16,
-    flex: 1, // Let container expand
+    flex: 1, 
+    shadowColor: '#94A3B8',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.05,
+    shadowRadius: 12,
+    elevation: 2,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 16,
+    marginBottom: 20,
   },
   navButton: {
-    padding: 8,
-    borderRadius: 8,
-    backgroundColor: '#F1F5F9',
+    padding: 10,
+    borderRadius: 12,
+    backgroundColor: '#F8FAFC',
   },
   monthTitle: {
     fontSize: 18,
-    fontWeight: '700',
-    color: '#0F172A',
+    fontWeight: '800',
+    color: '#1E293B',
+    letterSpacing: -0.3,
   },
   weekRow: {
     flexDirection: 'row',
-    marginBottom: 8,
+    marginBottom: 12,
   },
   dayHeaderCell: {
     flex: 1,
@@ -206,7 +212,7 @@ const styles = StyleSheet.create({
   },
   dayHeaderText: {
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '700',
     color: '#94A3B8',
   },
   grid: {
@@ -216,8 +222,8 @@ const styles = StyleSheet.create({
   calendarRow: {
     flex: 1,
     flexDirection: 'row',
-    gap: 4,
-    marginBottom: 4,
+    gap: 6,
+    marginBottom: 6,
   },
   cellEmpty: {
     flex: 1,
@@ -225,8 +231,8 @@ const styles = StyleSheet.create({
   },
   cell: {
     flex: 1,
-    borderRadius: 10,
-    overflow: 'hidden', // Contain the absolute stripes
+    borderRadius: 14, // more squircle feel
+    overflow: 'hidden', 
     position: 'relative',
   },
   stripesContainer: {
@@ -240,23 +246,23 @@ const styles = StyleSheet.create({
   },
   todayCell: {
     borderWidth: 2,
-    borderColor: '#3B82F6',
+    borderColor: '#4F46E5', // Warm Indigo
   },
   dayText: {
     fontSize: 13,
-    fontWeight: '500',
-    color: '#334155',
+    fontWeight: '600',
+    color: '#475569',
   },
   dayTextWithEntry: {
-    color: '#fff',
-    fontWeight: '700',
-    textShadowColor: 'rgba(0, 0, 0, 0.5)',
+    color: '#ffffff',
+    fontWeight: '800',
+    textShadowColor: 'rgba(0, 0, 0, 0.4)',
     textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 2,
+    textShadowRadius: 3,
   },
   todayText: {
-    color: '#3B82F6',
-    fontWeight: '700',
+    color: '#4F46E5', // Warm Indigo
+    fontWeight: '800',
   },
   cellEmoji: {
     fontSize: 12,
@@ -266,13 +272,13 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 4,
     right: 4,
-    backgroundColor: 'rgba(0,0,0,0.4)',
+    backgroundColor: 'rgba(0,0,0,0.3)',
     borderRadius: 8,
     paddingHorizontal: 4,
     paddingVertical: 2,
   },
   badgeText: {
-    color: '#fff',
+    color: '#ffffff',
     fontSize: 9,
     fontWeight: 'bold',
   }

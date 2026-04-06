@@ -36,28 +36,44 @@ export default function ActivateScreen() {
     if (!user) return;
 
     setLoading(true);
+    
+    // Safety Timeout: 10 detik paksa stop loading jika stuck
+    const timeoutId = setTimeout(() => {
+      setLoading(false);
+      setMessage({ type: 'error', text: 'Koneksi lambat. Silakan muat ulang halaman (F5).' });
+    }, 10000);
+
     try {
       const cleanCode = code.trim().toUpperCase();
       console.log('1. Memeriksa kode di database...', cleanCode);
 
-      const { data: codeData, error: findError } = await supabase
+      // Gunakan query biasa (bukan .single) agar lebih ramah browser/PWA
+      const { data, error: findError } = await supabase
         .from('activation_codes')
         .select('id, is_used')
-        .eq('code', cleanCode)
-        .single();
+        .eq('code', cleanCode);
 
-      if (findError || !codeData) {
+      clearTimeout(timeoutId); // Batalkan timeout jika server merespons
+
+      if (findError) {
         console.error('Find Error:', findError);
-        setMessage({ type: 'error', text: 'Kode tidak valid. Pastikan pengetikan Anda benar.' });
+        setMessage({ type: 'error', text: 'Gagal menghubungi server.' });
+        return;
+      }
+
+      const codeData = data && data.length > 0 ? data[0] : null;
+
+      if (!codeData) {
+        setMessage({ type: 'error', text: 'Kode tidak valid. Cek EJ- dan hurufnya.' });
         return;
       }
 
       if (codeData.is_used) {
-        setMessage({ type: 'error', text: 'Kode ini kedaluwarsa atau sudah diklaim pengguna lain.' });
+        setMessage({ type: 'error', text: 'Kode ini sudah digunakan orang lain.' });
         return;
       }
 
-      console.log('2. Mulai klaim kode (Update RLS)...');
+      console.log('2. Mulai klaim kode...');
       const { error: updateError } = await supabase
         .from('activation_codes')
         .update({
@@ -82,8 +98,9 @@ export default function ActivateScreen() {
 
     } catch (error: any) {
       console.error('Activation try-catch error:', error);
-      setMessage({ type: 'error', text: error.message || 'Terjadi kesalahan sistem.' });
+      setMessage({ type: 'error', text: 'Gagal mengaktivasi. Cek koneksi internet Anda.' });
     } finally {
+      clearTimeout(timeoutId);
       setLoading(false);
     }
   };

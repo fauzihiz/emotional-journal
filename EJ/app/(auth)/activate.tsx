@@ -37,6 +37,7 @@ export default function ActivateScreen() {
     try {
       const cleanCode = code.trim().toUpperCase();
 
+      console.log('1. Memeriksa kode di database...', cleanCode);
       // 1. Cek apakah kode valid dan belum digunakan
       const { data: codeData, error: findError } = await supabase
         .from('activation_codes')
@@ -44,21 +45,24 @@ export default function ActivateScreen() {
         .eq('code', cleanCode)
         .single();
 
+      console.log('2. Hasil pencarian:', findError ? 'Error/Not Found' : 'Ditemukan');
+
       if (findError || !codeData) {
         console.error('Find Error:', findError);
         const msg = 'Pastikan kode yang Anda masukkan benar.';
-        Platform.OS === 'web' ? window.alert(msg) : Alert.alert('Kode Tidak Valid', msg);
+        Platform.OS === 'web' ? alert(msg) : Alert.alert('Kode Tidak Valid', msg);
         setLoading(false);
         return;
       }
 
       if (codeData.is_used) {
         const msg = 'Kode ini sudah kedaluwarsa atau digunakan oleh orang lain.';
-        Platform.OS === 'web' ? window.alert(msg) : Alert.alert('Kode Terpakai', msg);
+        Platform.OS === 'web' ? alert(msg) : Alert.alert('Kode Terpakai', msg);
         setLoading(false);
         return;
       }
 
+      console.log('3. Mulai klaim kode (Update RLS)...');
       // 2. Klaim kode tersebut
       const { error: updateError } = await supabase
         .from('activation_codes')
@@ -74,9 +78,10 @@ export default function ActivateScreen() {
         throw updateError;
       }
 
+      console.log('4. Klaim berhasil, memperbarui state global.');
       // 3. Sukses, ubah state global langsung (agar tidak terhalang kompatibilitas tombol Alert di Web)
       if (Platform.OS === 'web') {
-        window.alert('Aktivasi Berhasil! Selamat datang di Ruang Jurnal Anda.');
+        alert('Aktivasi Berhasil! Selamat datang di Ruang Jurnal Anda.');
       } else {
         Alert.alert('Aktivasi Berhasil!', 'Selamat datang di Ruang Jurnal Anda.');
       }
@@ -86,15 +91,23 @@ export default function ActivateScreen() {
     } catch (error: any) {
       console.error('Activation try-catch error:', error);
       const msg = error.message || 'Terjadi kesalahan sistem.';
-      Platform.OS === 'web' ? window.alert(msg) : Alert.alert('Error', msg);
+      Platform.OS === 'web' ? alert(msg) : Alert.alert('Error', msg);
     } finally {
+      console.log('5. Mengakhiri loading');
       setLoading(false);
     }
   };
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
-    signOut();
+    try {
+      console.log('Mencoba signout dari Supabase...');
+      await supabase.auth.signOut();
+    } catch (e) {
+      console.warn('Gagal signout Supabase, tetap paksa keluar lokal:', e);
+    } finally {
+      signOut();
+      console.log('Signout state store berhasil.');
+    }
   };
 
   return (

@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   SafeAreaView,
   ActivityIndicator,
-  Alert,
   Linking,
   KeyboardAvoidingView,
   Platform,
@@ -22,12 +21,15 @@ export default function ActivateScreen() {
   const { user, setActivated, signOut } = useAuthStore();
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState<{ type: 'error' | 'success'; text: string } | null>(null);
 
   const LYNK_ID_URL = 'https://lynk.id/'; // Tanti ganti dengan URL produk asli klien
 
   const handleActivate = async () => {
+    setMessage(null);
+
     if (!code.trim()) {
-      Alert.alert('Gagal', 'Silakan masukkan kode aktivasi Anda.');
+      setMessage({ type: 'error', text: 'Silakan masukkan kode aktivasi Anda.' });
       return;
     }
 
@@ -36,34 +38,26 @@ export default function ActivateScreen() {
     setLoading(true);
     try {
       const cleanCode = code.trim().toUpperCase();
-
       console.log('1. Memeriksa kode di database...', cleanCode);
-      // 1. Cek apakah kode valid dan belum digunakan
+      
       const { data: codeData, error: findError } = await supabase
         .from('activation_codes')
         .select('id, is_used')
         .eq('code', cleanCode)
         .single();
 
-      console.log('2. Hasil pencarian:', findError ? 'Error/Not Found' : 'Ditemukan');
-
       if (findError || !codeData) {
         console.error('Find Error:', findError);
-        const msg = 'Pastikan kode yang Anda masukkan benar.';
-        Platform.OS === 'web' ? alert(msg) : Alert.alert('Kode Tidak Valid', msg);
-        setLoading(false);
+        setMessage({ type: 'error', text: 'Kode tidak valid. Pastikan pengetikan Anda benar.' });
         return;
       }
 
       if (codeData.is_used) {
-        const msg = 'Kode ini sudah kedaluwarsa atau digunakan oleh orang lain.';
-        Platform.OS === 'web' ? alert(msg) : Alert.alert('Kode Terpakai', msg);
-        setLoading(false);
+        setMessage({ type: 'error', text: 'Kode ini kedaluwarsa atau sudah diklaim pengguna lain.' });
         return;
       }
 
-      console.log('3. Mulai klaim kode (Update RLS)...');
-      // 2. Klaim kode tersebut
+      console.log('2. Mulai klaim kode (Update RLS)...');
       const { error: updateError } = await supabase
         .from('activation_codes')
         .update({
@@ -74,39 +68,32 @@ export default function ActivateScreen() {
         .eq('id', codeData.id);
 
       if (updateError) {
-        console.error('Update Error:', updateError);
         throw updateError;
       }
 
-      console.log('4. Klaim berhasil, memperbarui state global.');
-      // 3. Sukses, ubah state global langsung (agar tidak terhalang kompatibilitas tombol Alert di Web)
-      if (Platform.OS === 'web') {
-        alert('Aktivasi Berhasil! Selamat datang di Ruang Jurnal Anda.');
-      } else {
-        Alert.alert('Aktivasi Berhasil!', 'Selamat datang di Ruang Jurnal Anda.');
-      }
+      console.log('3. Klaim berhasil!');
+      setMessage({ type: 'success', text: 'Aktivasi Berhasil! Membuka Ruang Jurnal Anda...' });
       
-      setActivated(true);
+      // Beri jeda 1.5 detik agar kustomer sempat membaca pesan sukes sebelum dilempar
+      setTimeout(() => {
+        setActivated(true);
+      }, 1500);
 
     } catch (error: any) {
       console.error('Activation try-catch error:', error);
-      const msg = error.message || 'Terjadi kesalahan sistem.';
-      Platform.OS === 'web' ? alert(msg) : Alert.alert('Error', msg);
+      setMessage({ type: 'error', text: error.message || 'Terjadi kesalahan sistem.' });
     } finally {
-      console.log('5. Mengakhiri loading');
       setLoading(false);
     }
   };
 
   const handleLogout = async () => {
     try {
-      console.log('Mencoba signout dari Supabase...');
       await supabase.auth.signOut();
     } catch (e) {
       console.warn('Gagal signout Supabase, tetap paksa keluar lokal:', e);
     } finally {
       signOut();
-      console.log('Signout state store berhasil.');
     }
   };
 
@@ -132,6 +119,19 @@ export default function ActivateScreen() {
         </View>
 
         <View style={styles.formSection}>
+          {message && (
+            <View style={[styles.messageBox, message.type === 'error' ? styles.messageBoxError : styles.messageBoxSuccess]}>
+              <Ionicons 
+                name={message.type === 'error' ? 'alert-circle-outline' : 'checkmark-circle-outline'} 
+                size={20} 
+                color={message.type === 'error' ? '#EF4444' : '#10B981'} 
+              />
+              <Text style={[styles.messageText, message.type === 'error' ? styles.messageTextError : styles.messageTextSuccess]}>
+                {message.text}
+              </Text>
+            </View>
+          )}
+
           <View style={styles.inputContainer}>
             <Ionicons name="barcode-outline" size={20} color="#94A3B8" style={styles.inputIcon} />
             <TextInput
@@ -139,7 +139,10 @@ export default function ActivateScreen() {
               placeholder="Contoh: EJ-X9K2P"
               placeholderTextColor="#94A3B8"
               value={code}
-              onChangeText={setCode}
+              onChangeText={(text) => {
+                setCode(text);
+                if (message) setMessage(null); // Sembunyikan notifikasi saat user mulai mengetik ulang
+              }}
               autoCapitalize="characters"
               autoCorrect={false}
               editable={!loading}
@@ -278,5 +281,34 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#4F46E5',
     fontWeight: '700',
+  },
+  messageBox: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    padding: 12,
+    borderRadius: 12,
+    marginBottom: 16,
+    borderWidth: 1,
+  },
+  messageBoxError: {
+    backgroundColor: '#FEF2F2',
+    borderColor: '#FECACA',
+  },
+  messageBoxSuccess: {
+    backgroundColor: '#ECFDF5',
+    borderColor: '#A7F3D0',
+  },
+  messageText: {
+    marginLeft: 8,
+    fontSize: 14,
+    fontWeight: '500',
+    flex: 1,
+    lineHeight: 20,
+  },
+  messageTextError: {
+    color: '#DC2626',
+  },
+  messageTextSuccess: {
+    color: '#059669',
   },
 });

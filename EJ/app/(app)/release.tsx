@@ -66,7 +66,8 @@ export default function ReleaseSessionScreen() {
   const [afterScore, setAfterScore] = useState(5);
 
   // Breathing State (Step 1)
-  const [breathLabel, setBreathLabel] = useState('Tarik Napas (Hidung)');
+  const [isBreathingActive, setIsBreathingActive] = useState(false);
+  const [breathLabel, setBreathLabel] = useState('Tarik napas lewat hidung');
   const [breathTimer, setBreathTimer] = useState(4);
   const [breathCycle, setBreathCycle] = useState(0);
 
@@ -123,7 +124,7 @@ export default function ReleaseSessionScreen() {
     let interval: any;
     let animTimeout: any;
 
-    if (step === 1) {
+    if (step === 1 && isBreathingActive) {
       // Defer breathing animation initialization
       animTimeout = setTimeout(() => {
         // Pulse animation (4s inhale / 6s exhale)
@@ -140,17 +141,17 @@ export default function ReleaseSessionScreen() {
       interval = setInterval(() => {
         setBreathTimer((t) => {
           if (t > 1) return t - 1;
-          
+
           // Toggle label and reset timer based on current phase
           setBreathLabel((prev) => {
             const isFinishedInhale = prev.includes('Tarik');
             if (isFinishedInhale) {
               setBreathTimer(6);
-              return 'Buang Napas (Mulut)';
+              return 'Buang napas lewat mulut';
             } else {
               setBreathTimer(4);
               setBreathCycle((c) => c + 1);
-              return 'Tarik Napas (Hidung)';
+              return 'Tarik napas lewat hidung';
             }
           });
           return 0; // Temp placeholder during label switch
@@ -221,24 +222,44 @@ export default function ReleaseSessionScreen() {
       <View style={styles.therapyBadgeContainer}>
         <Text style={styles.therapyBadge}>Letting Flow Therapy</Text>
       </View>
-      <Text style={styles.instructionText}>
-        Mari kita mulai dengan mengatur pernapasan agar rileks.
-      </Text>
-      
-      <View style={styles.breathingContainer}>
-        <Animated.View style={[styles.breathingCircle, animatedBreathing]} />
-        <View style={styles.breathingInner}>
-          <Text style={styles.breathCountdown}>{breathTimer}</Text>
-          <Text style={styles.breathingLabel}>{breathLabel}</Text>
-          <Text style={styles.cycleText}>Siklus Selesai: {breathCycle}</Text>
-        </View>
-      </View>
 
-      <TouchableOpacity style={styles.primaryButton} onPress={nextStep}>
-        <Text style={styles.buttonText}>
-          {breathCycle >= 1 ? 'Lanjutkan' : 'Lewati & Mulai'}
-        </Text>
-      </TouchableOpacity>
+      {!isBreathingActive ? (
+        <>
+          <Text style={styles.instructionText}>
+            Mari kita mulai dengan mengatur pernapasan agar rileks.
+          </Text>
+          <View style={styles.breathingGuideBox}>
+            <View style={styles.guideItem}>
+              <Ionicons name="caret-up-circle" size={24} color="#6366F1" />
+              <Text style={styles.guideText}>Tarik napas lewat <Text style={styles.boldText}>hidung</Text> (4 detik)</Text>
+            </View>
+            <View style={styles.guideItem}>
+              <Ionicons name="caret-down-circle" size={24} color="#EF4444" />
+              <Text style={styles.guideText}>Buang napas lewat <Text style={styles.boldText}>mulut</Text> (6 detik)</Text>
+            </View>
+          </View>
+          <TouchableOpacity style={styles.primaryButton} onPress={() => setIsBreathingActive(true)}>
+            <Text style={styles.buttonText}>Mulai Bernapas</Text>
+          </TouchableOpacity>
+        </>
+      ) : (
+        <>
+          <View style={styles.breathingContainer}>
+            <Animated.View style={[styles.breathingCircle, animatedBreathing]} />
+            <View style={styles.breathingInner}>
+              <Text style={styles.breathCountdown}>{breathTimer}</Text>
+              <Text style={styles.breathingLabel}>{breathLabel}</Text>
+              <Text style={styles.cycleText}>Siklus Selesai: {breathCycle}</Text>
+            </View>
+          </View>
+
+          <TouchableOpacity style={styles.primaryButton} onPress={nextStep}>
+            <Text style={styles.buttonText}>
+              {breathCycle >= 1 ? 'Lanjutkan' : 'Lewati & Mulai'}
+            </Text>
+          </TouchableOpacity>
+        </>
+      )}
     </Animated.View>
   );
 
@@ -264,8 +285,8 @@ export default function ReleaseSessionScreen() {
           </TouchableOpacity>
         ))}
       </View>
-      <TouchableOpacity 
-        style={[styles.primaryButton, !selectedEmotion && styles.buttonDisabled]} 
+      <TouchableOpacity
+        style={[styles.primaryButton, !selectedEmotion && styles.buttonDisabled]}
         onPress={nextStep}
         disabled={!selectedEmotion}
       >
@@ -283,7 +304,7 @@ export default function ReleaseSessionScreen() {
         <Animated.View style={[styles.pulseCircle, animatedPulse]} />
         <Text style={styles.timerText}>{timerLeft}s</Text>
       </View>
-      
+
       <View style={styles.buttonRow}>
         <TouchableOpacity style={styles.secondaryButton} onPress={() => setTimerLeft(prev => prev + 30)}>
           <Text style={styles.secondaryButtonText}>Beri Waktu Lagi</Text>
@@ -300,7 +321,7 @@ export default function ReleaseSessionScreen() {
     <View style={styles.stepContainer}>
       <Text style={styles.pillarTitle}>3. Letting Go (Merelakan)</Text>
       <Text style={styles.subtitle}>Tuangkan apa yang ingin kamu lepaskan. Merelakan adalah membebaskan diri.</Text>
-      
+
       <Animated.View style={[styles.inputWrapper, animatedDissolve]}>
         <TextInput
           style={styles.textArea}
@@ -312,8 +333,8 @@ export default function ReleaseSessionScreen() {
         />
       </Animated.View>
 
-      <TouchableOpacity 
-        style={[styles.releaseButton, !releasedText && styles.buttonDisabled]} 
+      <TouchableOpacity
+        style={[styles.releaseButton, !releasedText && styles.buttonDisabled]}
         onPress={handleDissolve}
         disabled={!releasedText}
       >
@@ -328,12 +349,11 @@ export default function ReleaseSessionScreen() {
       <Text style={styles.pillarTitle}>4. Letting God (Menyerahkan)</Text>
       <Ionicons name="sparkles" size={64} color="#FACC15" style={{ marginBottom: 20 }} />
       <Text style={styles.subtitle}>
-        Serahkan segalanya kepada Allah Swt. Dapatkan ketenangan dalam ketetapan-Nya. Dia sebaik-baiknya tempat bersandar.
+        Serahkan segalanya kepada Allah. Dapatkan ketenangan dalam ketetapan-Nya. Dia sebaik-baiknya tempat bersandar.
       </Text>
 
       <View style={styles.sliderSection}>
-        <Text style={styles.sliderValueText}>{afterScore}</Text>
-        <Text style={styles.sliderLabelCurrent}>{getCalmnessLabel(afterScore)}</Text>
+        <Text style={styles.sliderValueText}>{afterScore} ({getCalmnessLabel(afterScore)})</Text>
         <Text style={styles.sliderLabel}>Seberapa tenang perasaanmu sekarang? (1-10)</Text>
         <Slider
           style={{ width: '100%', height: 40 }}
@@ -598,16 +618,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   sliderValueText: {
-    fontSize: 64,
+    fontSize: 32,
     fontWeight: '900',
     color: '#4F46E5',
-    marginBottom: 4,
-  },
-  sliderLabelCurrent: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#6366F1',
-    marginBottom: 24,
+    marginBottom: 8,
     textAlign: 'center',
   },
   sliderLabel: {
@@ -627,5 +641,26 @@ const styles = StyleSheet.create({
   tickText: {
     color: '#64748B',
     fontSize: 12,
+  },
+  breathingGuideBox: {
+    backgroundColor: '#1E293B',
+    padding: 24,
+    borderRadius: 24,
+    width: '100%',
+    marginBottom: 40,
+    gap: 16,
+  },
+  guideItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  guideText: {
+    color: '#F8FAFC',
+    fontSize: 16,
+  },
+  boldText: {
+    fontWeight: '800',
+    color: '#fff',
   },
 });

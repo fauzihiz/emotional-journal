@@ -105,6 +105,13 @@ Berikut adalah ringkasan masalah teknis yang dihadapi selama pengembangan dan ca
 - **Kendala**: Menambahkan emosi baru menyebabkan error *Foreign Key* atau salah warna pada data lama.
 - **Solusi**: Melakukan `TRUNCATE emotions CASCADE` dan melakukan *re-seed* data 12 emosi baru agar ID dan urutan gradasi warna sinkron antara kode aplikasi dan database.
 
+### 5. Aktivasi Stuck / Loading Terus (Monetization Gate)
+- **Kendala**: Setelah memasukkan kode benar, layar tetap berputar (loading) atau tidak berpindah.
+- **Solusi**: 
+    - Melakukan **Hard Refresh** (`Ctrl + Shift + R`) untuk membersihkan cache PWA lama.
+    - Memastikan kode dimasukkan dengan format lengkap (contoh: `EJ-XXXXX`).
+    - Gunakan fungsi `maybeSingle()` dan tambahkan `.select()` pada update query untuk menghindari *HTTP 204 No Content hang*.
+
 ## ⚠️ Known Issues (TODO)
 - [ ] **Email Confirmation**: Saat ini dimatikan untuk development. Harus diaktifkan kembali sebelum production.
 - [ ] **EAS CLI**: Memerlukan instalasi global (`npm install -g eas-cli`).

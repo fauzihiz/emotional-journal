@@ -132,24 +132,20 @@ export default function DashboardScreen() {
         </View>
 
         <View style={styles.therapyRow}>
-          <View style={styles.therapyLabel}>
+          <TouchableOpacity 
+            style={styles.therapyMainBtn}
+            onPress={() => router.push('/release')}
+          >
             <Ionicons name="leaf" size={18} color="#4F46E5" />
-            <Text style={styles.therapyLabelText}>Sesi Release Emosi</Text>
-          </View>
-          <View style={styles.therapyActions}>
-            <TouchableOpacity 
-              style={styles.therapyStartBtnSmall}
-              onPress={() => router.push('/release')}
-            >
-              <Text style={styles.therapyStartBtnTextSmall}>Mulai</Text>
-            </TouchableOpacity>
-            <TouchableOpacity 
-              style={styles.therapyHistoryBtnSmall}
-              onPress={() => router.push('/release-history')}
-            >
-              <Ionicons name="time-outline" size={18} color="#64748B" />
-            </TouchableOpacity>
-          </View>
+            <Text style={styles.therapyLabelText}>Mulai Sesi Release Emosi</Text>
+            <Ionicons name="chevron-forward" size={16} color="#64748B" style={{ marginLeft: 'auto' }} />
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={styles.therapyHistoryBtnSmall}
+            onPress={() => router.push('/release-history')}
+          >
+            <Ionicons name="time-outline" size={18} color="#64748B" />
+          </TouchableOpacity>
         </View>
 
         {isLoading && !entries ? (
@@ -170,15 +166,6 @@ export default function DashboardScreen() {
             onNextMonth={handleNextMonth}
           />
         )}
-
-        <TouchableOpacity 
-          style={styles.creditContainer} 
-          onPress={() => Linking.openURL('https://fauzihiz.github.io/')}
-        >
-          <Text style={styles.creditText}>
-            Built with ❤️ by <Text style={styles.creditName}>Fauzihiz</Text>
-          </Text>
-        </TouchableOpacity>
       </View>
 
       {/* FAB */}
@@ -187,7 +174,7 @@ export default function DashboardScreen() {
         onPress={handleAddToday}
         activeOpacity={0.8}
       >
-        <Ionicons name="pencil" size={28} color="#fff" />
+        <Ionicons name="pencil-outline" size={28} color="#fff" />
       </TouchableOpacity>
 
       {/* Detail Modal */}
@@ -205,6 +192,16 @@ export default function DashboardScreen() {
         dateStr={selectedDateStr}
         onClose={() => setQuickLogVisible(false)}
       />
+
+      {/* Absolute Credit at the very bottom */}
+      <TouchableOpacity 
+        style={styles.creditContainer} 
+        onPress={() => Linking.openURL('https://fauzihiz.github.io/')}
+      >
+        <Text style={styles.creditText}>
+          Built by <Text style={styles.creditName}>Fauzihiz</Text>
+        </Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }
@@ -281,61 +278,56 @@ const styles = StyleSheet.create({
   therapyRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 8,
+    marginBottom: 20,
+  },
+  therapyMainBtn: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: '#ffffff',
     borderRadius: 16,
     paddingHorizontal: 16,
-    paddingVertical: 10,
-    marginBottom: 20,
+    paddingVertical: 12,
+    gap: 12,
     shadowColor: '#94A3B8',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 8,
     elevation: 2,
   },
-  therapyLabel: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
   therapyLabelText: {
     fontSize: 14,
     fontWeight: '700',
     color: '#1E293B',
   },
-  therapyActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  therapyStartBtnSmall: {
-    backgroundColor: '#4F46E5',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 10,
-  },
-  therapyStartBtnTextSmall: {
-    color: '#ffffff',
-    fontSize: 12,
-    fontWeight: '700',
-  },
   therapyHistoryBtnSmall: {
-    padding: 8,
-    borderRadius: 10,
-    backgroundColor: '#F8FAFC',
+    padding: 12,
+    borderRadius: 16,
+    backgroundColor: '#ffffff',
+    shadowColor: '#94A3B8',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
   },
   creditContainer: {
+    position: 'absolute',
+    bottom: 12,
+    left: 0,
+    right: 0,
     alignItems: 'center',
-    marginTop: 32,
-    marginBottom: 20,
+    paddingVertical: 4,
+    backgroundColor: 'transparent',
   },
   creditText: {
-    fontSize: 12,
+    fontSize: 10,
     color: '#94A3B8',
-    fontWeight: '500',
+    fontWeight: '400',
+    opacity: 0.7,
   },
   creditName: {
-    color: '#4F46E5',
-    fontWeight: '700',
+    color: '#94A3B8',
+    fontWeight: '600',
   },
 });

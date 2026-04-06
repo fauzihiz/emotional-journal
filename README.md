@@ -45,22 +45,7 @@ Kami menggunakan 12 kategori emosi dengan spektrum warna gradasi:
 - [x] Proteksi cerdas (mencegah curi start mencatat tanggal masa depan).
 - [x] Galaxy Mesh (soft gradients) untuk multi-mood days. ✨
 
-### Fase 3: Distribusi & Mobile Build (PWA & APK) 🚧
-- [x] Setup deployment ke Vercel (Web Hosting).
-- [x] Optimasi PWA (Add to Home Screen).
-- [x] Integrasi Google Auth (Web & Native Support).
-- [ ] Setup EAS Build untuk Android APK.
-
-### Fase 4: Offline & Performa (v1.1)
-- [ ] Implementasi React Query Persistence.
-- [ ] Optimasi *Fetching* bulanan (Hanya ambil data bulan aktif).
-- [x] UI/UX Remake (Warm Aesthetic & Safe Space). ✅
-
-### Fase 5: Insight & Analisis (v2.0+)
-- [ ] Statistik bulanan/tahunan.
-- [ ] Notifikasi pengingat harian.
-
-### Fase 6: Guided Emotional Release (Therapy Mode) ✅
+### Fase 3: Guided Emotional Release (Therapy Mode) ✅
 - [x] Setup Tabel `release_sessions` di Supabase. ✅
 - [x] Implementasi **Letting Flow Therapy** (4 Pilar) ✅:
     *   **Letting Come (Hadir)**: Deteksi emosi negatif (Marah, Takut, dll).
@@ -71,6 +56,27 @@ Kami menggunakan 12 kategori emosi dengan spektrum warna gradasi:
     *   4 Detik Hirup (Hidung) & 6 Detik Buang (Mulut) dengan Countdown.
 - [x] Integrasi Audio Lokal (`assets/audio/calm.mp3`). ✅
 - [x] Riwayat Sesi (History Release Emosi) dengan label status ketenangan. ✅
+
+### Fase 4: Offline & Performa (v1.1) ✅
+- [x] Implementasi React Query Persistence (AsyncStorage). ✅
+- [x] Optimasi *Fetching* bulanan (Prefetching & Stale Time). ✅
+- [x] UI/UX Remake (Warm Aesthetic & Safe Space). ✅
+
+### Fase 5: Sistem Proteksi Akses (Monetization Gate) ✅
+- [x] Setup Skema Tabel `activation_codes`. ✅
+- [x] Implementasi UI Layar Aktivasi dengan *Safe Space Aesthetic*. ✅
+- [x] Logika *Gated Authentication* (Hanya izinkan ke Dashboard jika tervalidasi). ✅
+- [x] Script SQL untuk *Mass-Generate* Lisensi. ✅
+
+### Fase 6: Insight & Analisis (v2.0+)
+- [ ] Statistik bulanan/tahunan.
+- [ ] Notifikasi pengingat harian.
+
+### Fase 7: Distribusi & Mobile Build (Tahap Akhir) 🚧
+- [x] Setup deployment ke Vercel (Web Hosting).
+- [x] Optimasi PWA (Add to Home Screen).
+- [x] Integrasi Google Auth (Web & Native Support).
+- [ ] Setup EAS Build untuk final Android APK.
 
 ## 🛠️ Solusi Kendala Teknis (Troubleshooting)
 

@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ActivityIndicator, Linking } from 'react-native';
 import { useRouter } from 'expo-router';
 import { supabase } from '@/lib/supabase';
 import { useAuthStore } from '@/store/authStore';
@@ -170,6 +170,15 @@ export default function DashboardScreen() {
             onNextMonth={handleNextMonth}
           />
         )}
+
+        <TouchableOpacity 
+          style={styles.creditContainer} 
+          onPress={() => Linking.openURL('https://fauzihiz.github.io/')}
+        >
+          <Text style={styles.creditText}>
+            Built with ❤️ by <Text style={styles.creditName}>Fauzihiz</Text>
+          </Text>
+        </TouchableOpacity>
       </View>
 
       {/* FAB */}
@@ -314,5 +323,19 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: 10,
     backgroundColor: '#F8FAFC',
+  },
+  creditContainer: {
+    alignItems: 'center',
+    marginTop: 32,
+    marginBottom: 20,
+  },
+  creditText: {
+    fontSize: 12,
+    color: '#94A3B8',
+    fontWeight: '500',
+  },
+  creditName: {
+    color: '#4F46E5',
+    fontWeight: '700',
   },
 });

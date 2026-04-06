@@ -29,9 +29,24 @@ const asyncStoragePersister = createAsyncStoragePersister({
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const { session, initialized, setSession, setInitialized } = useAuthStore();
+  const { session, initialized, isActivated, setSession, setInitialized, setActivated } = useAuthStore();
   const segments = useSegments();
   const router = useRouter();
+
+  // Helper function to check activation status
+  const checkActivationStatus = async (userId: string) => {
+    const { data, error } = await supabase
+      .from('activation_codes')
+      .select('id')
+      .eq('used_by_user_id', userId)
+      .limit(1);
+    
+    if (error) {
+      console.error('Error checking activation:', error);
+      return false;
+    }
+    return data && data.length > 0;
+  };
 
   // 1. Initialize auth state on mount
   useEffect(() => {
@@ -46,17 +61,26 @@ export default function RootLayout() {
     }
 
     // First, check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log('Initial session fetch:', !!session);
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       setSession(session);
+      if (session) {
+        const isActive = await checkActivationStatus(session.user.id);
+        setActivated(isActive);
+      } else {
+        setActivated(false);
+      }
       setInitialized(true);
     });
 
     // Listen for auth changes (like after Google redirect)
-    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
-      console.log('Auth state changed:', _event, !!session);
+    const { data: authListener } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setSession(session);
-      // Ensure initialized is true if onAuthStateChange fires first
+      if (session) {
+        const isActive = await checkActivationStatus(session.user.id);
+        setActivated(isActive);
+      } else {
+        setActivated(false);
+      }
       setInitialized(true);
     });
 
@@ -67,18 +91,28 @@ export default function RootLayout() {
 
   // 2. Handle navigation AFTER mount and initialization
   useEffect(() => {
-    if (!initialized) return;
+    if (!initialized || isActivated === null) return;
 
     const inAuthGroup = segments[0] === '(auth)';
+    const isLoginScreen = segments[1] === 'login';
+    const isActivateScreen = segments[1] === 'activate';
 
-    if (!session && !inAuthGroup) {
+    if (!session && !isLoginScreen) {
+      // Not logged in -> Must Login
       console.log('No session, redirecting to login');
       router.replace('/(auth)/login');
-    } else if (session && inAuthGroup) {
-      console.log('Session found, redirecting to app');
-      router.replace('/(app)');
+    } else if (session) {
+      if (!isActivated && !isActivateScreen) {
+        // Logged in, but NOT activated -> Must Activate
+        console.log('Session found, but NOT activated. Redirecting to Activate Screen');
+        router.replace('/(auth)/activate');
+      } else if (isActivated && inAuthGroup) {
+        // Logged in AND activated -> Go to App
+        console.log('Session found and activated. Redirecting to app');
+        router.replace('/(app)');
+      }
     }
-  }, [session, initialized, segments]);
+  }, [session, initialized, isActivated, segments]);
 
   // 3. Show loading screen while initializing to prevent redirect loops
   if (!initialized) {

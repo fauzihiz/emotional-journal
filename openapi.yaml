@@ -42,8 +42,37 @@ paths:
           description: Entry created successfully
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/Entry'
-}
+              schema: { $ref: '#/components/schemas/Entry' }
+
+  /release_sessions:
+    get:
+      summary: List all therapy release sessions for the user
+      responses:
+        '200':
+          description: A list of release sessions
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/ReleaseSession' }
+
+  /activation_codes:
+    patch:
+      summary: Claim an activation code by a user
+      requestBody:
+        description: The code to claim
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                is_used: { type: boolean, example: true }
+                used_by_user_id: { type: string, format: uuid }
+                used_at: { type: string, format: date-time }
+      responses:
+        '200':
+          description: Code successfully claimed
 
 components:
   schemas:
@@ -72,3 +101,23 @@ components:
 }
         entry_date: { type: string, format: date, description: "Defaults to today if null"
 }
+
+    ReleaseSession:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        emotion_id: { type: integer, example: 2 }
+        released_text: { type: string, example: "Saya memaafkan masa lalu." }
+        before_score: { type: integer, example: 2 }
+        after_score: { type: integer, example: 8 }
+        duration: { type: integer, description: "Duration in seconds", example: 120 }
+        created_at: { type: string, format: date-time }
+
+    ActivationCode:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        code: { type: string, example: "EJ-A9Z2X" }
+        is_used: { type: boolean, example: true }
+        used_by_user_id: { type: string, format: uuid }
+        used_at: { type: string, format: date-time }

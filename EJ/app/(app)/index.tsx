@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 import { supabase } from '@/lib/supabase';
@@ -8,6 +8,8 @@ import HeatmapCalendar from '@/components/HeatmapCalendar';
 import QuickLogModal from '@/components/QuickLogModal';
 import DayDetailModal from '@/components/DayDetailModal';
 import { useMonthEntries } from '@/hooks/useEntries';
+import { useQueryClient } from '@tanstack/react-query';
+import { fetchEntriesByMonth } from '@/lib/api/entries';
 
 export default function DashboardScreen() {
   const router = useRouter();
@@ -23,7 +25,27 @@ export default function DashboardScreen() {
   const [selectedDateStr, setSelectedDateStr] = useState('');
 
   // Fetch entries
+  const queryClient = useQueryClient();
   const { data: entries, isLoading, error } = useMonthEntries(currentYear, currentMonth);
+
+  // Prefetch adjacent months for instant navigation
+  useEffect(() => {
+    // Prefetch Previous Month
+    const prevMonth = currentMonth === 1 ? 12 : currentMonth - 1;
+    const prevYear = currentMonth === 1 ? currentYear - 1 : currentYear;
+    queryClient.prefetchQuery({
+      queryKey: ['entries', prevYear, prevMonth],
+      queryFn: () => fetchEntriesByMonth(prevYear, prevMonth),
+    });
+
+    // Prefetch Next Month
+    const nextMonth = currentMonth === 12 ? 1 : currentMonth + 1;
+    const nextYear = currentMonth === 12 ? currentYear + 1 : currentYear;
+    queryClient.prefetchQuery({
+      queryKey: ['entries', nextYear, nextMonth],
+      queryFn: () => fetchEntriesByMonth(nextYear, nextMonth),
+    });
+  }, [currentYear, currentMonth, queryClient]);
 
   // Helper to get entries for a specific date
   const getEntriesForDate = (dateStr: string) => {
@@ -130,11 +152,11 @@ export default function DashboardScreen() {
           </View>
         </View>
 
-        {isLoading ? (
+        {isLoading && !entries ? (
           <View style={styles.loadingContainer}>
             <ActivityIndicator size="large" color="#4F46E5" />
           </View>
-        ) : error ? (
+        ) : error && !entries ? (
           <View style={styles.errorContainer}>
             <Text style={styles.errorText}>Gagal memuat data calendar.</Text>
           </View>

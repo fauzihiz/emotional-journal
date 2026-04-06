@@ -170,7 +170,7 @@ export default function ReleaseSessionScreen() {
       pulseValue.value = 1;
       breathingPulse.value = 1;
     }
-  }, [step]);
+  }, [step, isBreathingActive]);
 
   // Animated Styles
   const animatedBreathing = useAnimatedStyle(() => ({

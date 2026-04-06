@@ -27,3 +27,19 @@ export const getEmotionById = (id: number): Emotion | undefined =>
 
 export const getEmotionColor = (id: number): string =>
   getEmotionById(id)?.color ?? '#E2E8F0';
+
+export const CALMNESS_LEVELS: { [key: number]: string } = {
+  1: 'Sangat Berat',
+  2: 'Berat',
+  3: 'Kurang Nyaman',
+  4: 'Agak Terganggu',
+  5: 'Netral',
+  6: 'Mulai Lega',
+  7: 'Agak Tenang',
+  8: 'Tenang',
+  9: 'Sangat Tenang',
+  10: 'Damai',
+};
+
+export const getCalmnessLabel = (score: number): string => 
+  CALMNESS_LEVELS[score] || 'Netral';

@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ActivityIndicator } from 'react-native';
+import { useRouter } from 'expo-router';
 import { supabase } from '@/lib/supabase';
 import { useAuthStore } from '@/store/authStore';
 import { Ionicons } from '@expo/vector-icons';
@@ -9,6 +10,7 @@ import DayDetailModal from '@/components/DayDetailModal';
 import { useMonthEntries } from '@/hooks/useEntries';
 
 export default function DashboardScreen() {
+  const router = useRouter();
   const { user, signOut } = useAuthStore();
   
   const today = new Date();
@@ -107,6 +109,27 @@ export default function DashboardScreen() {
           </TouchableOpacity>
         </View>
 
+        <View style={styles.therapyRow}>
+          <View style={styles.therapyLabel}>
+            <Ionicons name="leaf" size={18} color="#4F46E5" />
+            <Text style={styles.therapyLabelText}>Sesi Release Emosi</Text>
+          </View>
+          <View style={styles.therapyActions}>
+            <TouchableOpacity 
+              style={styles.therapyStartBtnSmall}
+              onPress={() => router.push('/release')}
+            >
+              <Text style={styles.therapyStartBtnTextSmall}>Mulai</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.therapyHistoryBtnSmall}
+              onPress={() => router.push('/release-history')}
+            >
+              <Ionicons name="time-outline" size={18} color="#64748B" />
+            </TouchableOpacity>
+          </View>
+        </View>
+
         {isLoading ? (
           <View style={styles.loadingContainer}>
             <ActivityIndicator size="large" color="#4F46E5" />
@@ -169,24 +192,24 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 32,
+    marginBottom: 24, // reduced for compactness
     marginTop: 20, 
   },
   welcome: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#64748B',
-    marginBottom: 4,
+    marginBottom: 2,
   },
   email: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: '800',
     color: '#1E293B',
     letterSpacing: -0.5,
     textTransform: 'capitalize',
   },
   logoutButton: {
-    padding: 12,
-    borderRadius: 16,
+    padding: 10,
+    borderRadius: 14,
     backgroundColor: '#ffffff',
     shadowColor: '#94A3B8',
     shadowOffset: { width: 0, height: 2 },
@@ -210,8 +233,8 @@ const styles = StyleSheet.create({
   },
   fab: {
     position: 'absolute',
-    right: 28,
-    bottom: 32,
+    right: 24,
+    bottom: 24,
     width: 64,
     height: 64,
     borderRadius: 32,
@@ -223,5 +246,51 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.4,
     shadowRadius: 12,
+  },
+  therapyRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    marginBottom: 20,
+    shadowColor: '#94A3B8',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  therapyLabel: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  therapyLabelText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#1E293B',
+  },
+  therapyActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  therapyStartBtnSmall: {
+    backgroundColor: '#4F46E5',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 10,
+  },
+  therapyStartBtnTextSmall: {
+    color: '#ffffff',
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  therapyHistoryBtnSmall: {
+    padding: 8,
+    borderRadius: 10,
+    backgroundColor: '#F8FAFC',
   },
 });

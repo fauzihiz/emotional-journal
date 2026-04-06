@@ -54,11 +54,23 @@ Kami menggunakan 12 kategori emosi dengan spektrum warna gradasi:
 ### Fase 4: Offline & Performa (v1.1)
 - [ ] Implementasi React Query Persistence.
 - [ ] Optimasi *Fetching* bulanan (Hanya ambil data bulan aktif).
-- [ ] UI/UX Polishing (Animasi & Micro-interactions).
+- [x] UI/UX Remake (Warm Aesthetic & Safe Space). ✅
 
 ### Fase 5: Insight & Analisis (v2.0+)
 - [ ] Statistik bulanan/tahunan.
 - [ ] Notifikasi pengingat harian.
+
+### Fase 6: Guided Emotional Release (Therapy Mode) ✅
+- [x] Setup Tabel `release_sessions` di Supabase. ✅
+- [x] Implementasi **Letting Flow Therapy** (4 Pilar) ✅:
+    *   **Letting Come (Hadir)**: Deteksi emosi negatif (Marah, Takut, dll).
+    *   **Letting Stay (Amati)**: Sesi mindfulness dengan timer mengalir.
+    *   **Letting Go (Merelakan)**: Aksi pelepasan emosi (Dissolve Text Animation).
+    *   **Letting God (Menyerahkan)**: Penyerahan spiritual dengan skala ketenangan deskriptif.
+- [x] Integrasi **Pernapasan Relaksasi 4-6** ✅:
+    *   4 Detik Hirup (Hidung) & 6 Detik Buang (Mulut) dengan Countdown.
+- [x] Integrasi Audio Lokal (`assets/audio/calm.mp3`). ✅
+- [x] Riwayat Sesi (History Release Emosi) dengan label status ketenangan. ✅
 
 ## 🛠️ Solusi Kendala Teknis (Troubleshooting)
 

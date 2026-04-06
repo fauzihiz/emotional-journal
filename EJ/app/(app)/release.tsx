@@ -64,6 +64,12 @@ export default function ReleaseSessionScreen() {
   const [releasedText, setReleasedText] = useState('');
   const [beforeScore, setBeforeScore] = useState(5);
   const [afterScore, setAfterScore] = useState(5);
+  const [reflectionIndex, setReflectionIndex] = useState(0);
+
+  useEffect(() => {
+    // Randomize reflection on mount
+    setReflectionIndex(Math.floor(Math.random() * 2));
+  }, []);
 
   // Breathing State (Step 1)
   const [isBreathingActive, setIsBreathingActive] = useState(false);
@@ -124,7 +130,7 @@ export default function ReleaseSessionScreen() {
     let interval: any;
     let animTimeout: any;
 
-    if (step === 1 && isBreathingActive) {
+    if ((step === 1 || step === 3 || step === 5) && isBreathingActive) {
       // Defer breathing animation initialization
       animTimeout = setTimeout(() => {
         // Pulse animation (4s inhale / 6s exhale)
@@ -162,7 +168,7 @@ export default function ReleaseSessionScreen() {
         clearTimeout(animTimeout);
         clearInterval(interval);
       };
-    } else if (step === 3) {
+    } else if (step === 4) {
       setIsTimerRunning(true);
       startPulse();
     } else {
@@ -226,7 +232,7 @@ export default function ReleaseSessionScreen() {
       {!isBreathingActive ? (
         <>
           <Text style={styles.instructionText}>
-            Mari kita mulai dengan mengatur pernapasan agar rileks.
+            Mari kita mulai dengan mengatur pernapasan agar rileks
           </Text>
           <View style={styles.breathingGuideBox}>
             <View style={styles.guideItem}>
@@ -297,23 +303,27 @@ export default function ReleaseSessionScreen() {
 
   // Step 3: Letting Stay (Amati)
   const renderStep3 = () => (
-    <View style={styles.stepContainer}>
+    <Animated.View entering={FadeIn} style={styles.stepContainer}>
       <Text style={styles.pillarTitle}>2. Letting Stay (Amati)</Text>
-      <Text style={styles.instructionText}>Saksikan & Amati perasaan ini... Biarkan ia mengalir apa adanya.</Text>
-      <View style={styles.timerContainer}>
-        <Animated.View style={[styles.pulseCircle, animatedPulse]} />
-        <Text style={styles.timerText}>{timerLeft}s</Text>
+      <Text style={styles.subtitle}>Saksikan & Amati perasaan ini... Biarkan ia mengalir sambil menjaga ritme napasmu.</Text>
+
+      <View style={styles.breathingContainer}>
+        <Animated.View style={[styles.breathingCircle, animatedBreathing]} />
+        <View style={styles.breathingInner}>
+          <Text style={styles.breathCountdown}>{breathTimer}</Text>
+          <Text style={styles.breathingLabel}>{breathLabel}</Text>
+        </View>
       </View>
 
-      <View style={styles.buttonRow}>
-        <TouchableOpacity style={styles.secondaryButton} onPress={() => setTimerLeft(prev => prev + 30)}>
-          <Text style={styles.secondaryButtonText}>Beri Waktu Lagi</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.primaryButton} onPress={nextStep}>
-          <Text style={styles.buttonText}>Berikutnya</Text>
-        </TouchableOpacity>
+      <View style={styles.timerMiniBox}>
+        <Ionicons name="time-outline" size={16} color="#94A3B8" />
+        <Text style={styles.timerMiniText}>{timerLeft}s</Text>
       </View>
-    </View>
+
+      <TouchableOpacity style={styles.primaryButton} onPress={nextStep}>
+        <Text style={styles.buttonText}>Berikutnya</Text>
+      </TouchableOpacity>
+    </Animated.View>
   );
 
   // Step 4: Letting Go (Merelakan)
@@ -343,14 +353,70 @@ export default function ReleaseSessionScreen() {
     </View>
   );
 
-  // Step 5: Letting God (Menyerahkan)
+  // Step 5: Post-Release Breathing
   const renderStep5 = () => (
     <Animated.View entering={FadeIn} style={styles.stepContainer}>
+      <Text style={styles.pillarTitle}>Menstabilkan</Text>
+      <Text style={styles.subtitle}>Bagus. Sekarang mari stabilkan kembali perasaanmu dengan napas sejenak.</Text>
+      
+      <View style={styles.breathingContainer}>
+        <Animated.View style={[styles.breathingCircle, animatedBreathing]} />
+        <View style={styles.breathingInner}>
+          <Text style={styles.breathCountdown}>{breathTimer}</Text>
+          <Text style={styles.breathingLabel}>{breathLabel}</Text>
+        </View>
+      </View>
+
+      <TouchableOpacity style={styles.primaryButton} onPress={nextStep}>
+        <Text style={styles.buttonText}>Lanjutkan ke Refleksi</Text>
+      </TouchableOpacity>
+    </Animated.View>
+  );
+
+  // Step 6: Letting God (Reflection)
+  const renderStep6 = () => (
+    <Animated.View entering={FadeIn} style={styles.stepContainer}>
       <Text style={styles.pillarTitle}>4. Letting God (Menyerahkan)</Text>
-      <Ionicons name="sparkles" size={64} color="#FACC15" style={{ marginBottom: 20 }} />
-      <Text style={styles.subtitle}>
-        Serahkan segalanya kepada Allah. Dapatkan ketenangan dalam ketetapan-Nya. Dia sebaik-baiknya tempat bersandar.
-      </Text>
+      <Ionicons name="sparkles" size={64} color="#FACC15" style={{ marginBottom: 24 }} />
+      
+      <View style={styles.reflectionBox}>
+        {reflectionIndex === 0 ? (
+          <>
+            <Text style={styles.reflectionText}>
+              Perasaan kita valid.{"\n"}
+              Ia hadir bukan untuk dilawan, tapi untuk dipahami.
+            </Text>
+            <Text style={styles.reflectionTextSecondary}>
+              Karena pada akhirnya, apa pun yang Allah titipkan, ambil, atau gantikan...{"\n\n"}
+              Semuannya selalu yang terbaik, meski hati butuh waktu untuk mengerti.
+            </Text>
+          </>
+        ) : (
+          <>
+            <Text style={styles.reflectionText}>
+              Segala rasa yang hadir, boleh jadi adalah bentuk kebaikan dari Allah.
+            </Text>
+            <Text style={styles.reflectionTextSecondary}>
+              Meski di awal terasa berat, perlahan kita akan melihat maknanya.{"\n\n"}
+              Dia sebaik-baiknya perancang skenario kehidupan.
+            </Text>
+          </>
+        )}
+      </View>
+
+      <TouchableOpacity style={styles.primaryButton} onPress={nextStep}>
+        <Text style={styles.buttonText}>Lanjutkan</Text>
+      </TouchableOpacity>
+    </Animated.View>
+  );
+
+  // Step 7: Final Score
+  const renderStep7 = () => (
+    <Animated.View entering={FadeIn} style={styles.stepContainer}>
+      <Text style={styles.pillarTitle}>Selesai</Text>
+      <View style={styles.iconCircleLarge}>
+        <Ionicons name="leaf" size={48} color="#10B981" />
+      </View>
 
       <View style={styles.sliderSection}>
         <Text style={styles.sliderValueText}>{afterScore} ({getCalmnessLabel(afterScore)})</Text>
@@ -384,7 +450,7 @@ export default function ReleaseSessionScreen() {
         <TouchableOpacity onPress={() => router.back()} style={styles.closeBtn}>
           <Ionicons name="close" size={28} color="#94A3B8" />
         </TouchableOpacity>
-        <ProgressIndicator current={step} total={5} />
+        <ProgressIndicator current={step} total={7} />
         <TouchableOpacity onPress={toggleSound} style={styles.audioBtn}>
           <Ionicons name={isPlaying ? "volume-high" : "volume-mute"} size={24} color="#94A3B8" />
         </TouchableOpacity>
@@ -396,6 +462,8 @@ export default function ReleaseSessionScreen() {
         {step === 3 && renderStep3()}
         {step === 4 && renderStep4()}
         {step === 5 && renderStep5()}
+        {step === 6 && renderStep6()}
+        {step === 7 && renderStep7()}
       </View>
     </SafeAreaView>
   );
@@ -662,5 +730,52 @@ const styles = StyleSheet.create({
   boldText: {
     fontWeight: '800',
     color: '#fff',
+  },
+  reflectionBox: {
+    backgroundColor: '#1E293B',
+    padding: 32,
+    borderRadius: 32,
+    width: '100%',
+    marginBottom: 40,
+    borderLeftWidth: 4,
+    borderLeftColor: '#6366F1',
+  },
+  reflectionText: {
+    color: '#F8FAFC',
+    fontSize: 18,
+    lineHeight: 28,
+    fontWeight: '600',
+    marginBottom: 20,
+    fontStyle: 'italic',
+  },
+  reflectionTextSecondary: {
+    color: '#94A3B8',
+    fontSize: 15,
+    lineHeight: 24,
+    fontWeight: '500',
+  },
+  iconCircleLarge: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: '#10B98120',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 40,
+  },
+  timerMiniBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#1E293B',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 12,
+    gap: 8,
+    marginBottom: 40,
+  },
+  timerMiniText: {
+    color: '#94A3B8',
+    fontSize: 14,
+    fontWeight: '700',
   },
 });

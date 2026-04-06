@@ -47,13 +47,14 @@ Kami menggunakan 12 kategori emosi dengan spektrum warna gradasi:
 
 ### Fase 3: Guided Emotional Release (Therapy Mode) ✅
 - [x] Setup Tabel `release_sessions` di Supabase. ✅
-- [x] Implementasi **Letting Flow Therapy** (4 Pilar) ✅:
-    *   **Letting Come (Hadir)**: Deteksi emosi negatif (Marah, Takut, dll).
-    *   **Letting Stay (Amati)**: Sesi mindfulness dengan timer mengalir.
-    *   **Letting Go (Merelakan)**: Aksi pelepasan emosi (Dissolve Text Animation).
-    *   **Letting God (Menyerahkan)**: Penyerahan spiritual dengan skala ketenangan deskriptif.
-- [x] Integrasi **Pernapasan Relaksasi 4-6** ✅:
-    *   4 Detik Hirup (Hidung) & 6 Detik Buang (Mulut) dengan Countdown.
+- [x] Implementasi **Letting Flow Therapy** (7 Langkah) ✅:
+    *   **Langkah 1**: Relaksasi Pernapasan (Ritme 4-6) dengan instruksi.
+    *   **Langkah 2**: *Letting Come* (Menghadirkan emosi negatif yang ingin dilepas).
+    *   **Langkah 3**: *Letting Stay* (Mengamati emosi sambil menjaga ritme bernapas).
+    *   **Langkah 4**: *Letting Go* (Pelepasan emosi via animasi teks melarut).
+    *   **Langkah 5**: *Post-Release Breathing* (Relaksasi napas penenang pasca-lepas).
+    *   **Langkah 6**: *Letting God* (Refleksi spiritual puitis & penyerahan - Random Text).
+    *   **Langkah 7**: *Ketenangan Akhir* (Penilaian skala ketenangan pasca-terapi).
 - [x] Integrasi Audio Lokal (`assets/audio/calm.mp3`). ✅
 - [x] Riwayat Sesi (History Release Emosi) dengan label status ketenangan. ✅
 

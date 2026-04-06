@@ -39,7 +39,7 @@ export default function ActivateScreen() {
     try {
       const cleanCode = code.trim().toUpperCase();
       console.log('1. Memeriksa kode di database...', cleanCode);
-      
+
       const { data: codeData, error: findError } = await supabase
         .from('activation_codes')
         .select('id, is_used')
@@ -65,7 +65,8 @@ export default function ActivateScreen() {
           used_by_user_id: user.id,
           used_at: new Date().toISOString(),
         })
-        .eq('id', codeData.id);
+        .eq('id', codeData.id)
+        .select();
 
       if (updateError) {
         throw updateError;
@@ -73,7 +74,7 @@ export default function ActivateScreen() {
 
       console.log('3. Klaim berhasil!');
       setMessage({ type: 'success', text: 'Aktivasi Berhasil! Membuka Ruang Jurnal Anda...' });
-      
+
       // Beri jeda 1.5 detik agar kustomer sempat membaca pesan sukes sebelum dilempar
       setTimeout(() => {
         setActivated(true);
@@ -99,7 +100,7 @@ export default function ActivateScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView 
+      <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.content}
       >
@@ -121,10 +122,10 @@ export default function ActivateScreen() {
         <View style={styles.formSection}>
           {message && (
             <View style={[styles.messageBox, message.type === 'error' ? styles.messageBoxError : styles.messageBoxSuccess]}>
-              <Ionicons 
-                name={message.type === 'error' ? 'alert-circle-outline' : 'checkmark-circle-outline'} 
-                size={20} 
-                color={message.type === 'error' ? '#EF4444' : '#10B981'} 
+              <Ionicons
+                name={message.type === 'error' ? 'alert-circle-outline' : 'checkmark-circle-outline'}
+                size={20}
+                color={message.type === 'error' ? '#EF4444' : '#10B981'}
               />
               <Text style={[styles.messageText, message.type === 'error' ? styles.messageTextError : styles.messageTextSuccess]}>
                 {message.text}
@@ -149,8 +150,8 @@ export default function ActivateScreen() {
             />
           </View>
 
-          <TouchableOpacity 
-            style={[styles.button, loading && styles.buttonDisabled]} 
+          <TouchableOpacity
+            style={[styles.button, loading && styles.buttonDisabled]}
             onPress={handleActivate}
             disabled={loading}
           >

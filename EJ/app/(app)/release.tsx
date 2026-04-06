@@ -232,7 +232,8 @@ export default function ReleaseSessionScreen() {
       {!isBreathingActive ? (
         <>
           <Text style={styles.instructionText}>
-            Mari kita mulai dengan mengatur pernapasan agar rileks
+            Mari kita mulai dengan mengatur pernapasan agar rileks. {"\n"}
+            Silakan posisikan diri senyaman mungkin, sambil sadari napas, buang perlahan.
           </Text>
           <View style={styles.breathingGuideBox}>
             <View style={styles.guideItem}>
@@ -356,9 +357,10 @@ export default function ReleaseSessionScreen() {
   // Step 5: Post-Release Breathing
   const renderStep5 = () => (
     <Animated.View entering={FadeIn} style={styles.stepContainer}>
-      <Text style={styles.pillarTitle}>Menstabilkan</Text>
-      <Text style={styles.subtitle}>Bagus. Sekarang mari stabilkan kembali perasaanmu dengan napas sejenak.</Text>
-      
+      <Text style={styles.subtitle}>
+        Rasakan, bayangkan, setiap tarikan napas membuat tubuh jauh lebih rileks, jauh lebih nyaman.
+      </Text>
+
       <View style={styles.breathingContainer}>
         <Animated.View style={[styles.breathingCircle, animatedBreathing]} />
         <View style={styles.breathingInner}>
@@ -378,7 +380,7 @@ export default function ReleaseSessionScreen() {
     <Animated.View entering={FadeIn} style={styles.stepContainer}>
       <Text style={styles.pillarTitle}>4. Letting God (Menyerahkan)</Text>
       <Ionicons name="sparkles" size={64} color="#FACC15" style={{ marginBottom: 24 }} />
-      
+
       <View style={styles.reflectionBox}>
         {reflectionIndex === 0 ? (
           <>
@@ -398,7 +400,7 @@ export default function ReleaseSessionScreen() {
             </Text>
             <Text style={styles.reflectionTextSecondary}>
               Meski di awal terasa berat, perlahan kita akan melihat maknanya.{"\n\n"}
-              Dia sebaik-baiknya perancang skenario kehidupan.
+              Allah sebaik-baiknya perancang skenario kehidupan.
             </Text>
           </>
         )}

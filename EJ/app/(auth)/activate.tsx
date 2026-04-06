@@ -45,13 +45,16 @@ export default function ActivateScreen() {
         .single();
 
       if (findError || !codeData) {
-        Alert.alert('Kode Tidak Valid', 'Pastikan kode yang Anda masukkan benar.');
+        console.error('Find Error:', findError);
+        const msg = 'Pastikan kode yang Anda masukkan benar.';
+        Platform.OS === 'web' ? window.alert(msg) : Alert.alert('Kode Tidak Valid', msg);
         setLoading(false);
         return;
       }
 
       if (codeData.is_used) {
-        Alert.alert('Kode Terpakai', 'Kode ini sudah kedaluwarsa atau digunakan oleh orang lain.');
+        const msg = 'Kode ini sudah kedaluwarsa atau digunakan oleh orang lain.';
+        Platform.OS === 'web' ? window.alert(msg) : Alert.alert('Kode Terpakai', msg);
         setLoading(false);
         return;
       }
@@ -66,15 +69,24 @@ export default function ActivateScreen() {
         })
         .eq('id', codeData.id);
 
-      if (updateError) throw updateError;
+      if (updateError) {
+        console.error('Update Error:', updateError);
+        throw updateError;
+      }
 
-      // 3. Sukses, ubah state global
-      Alert.alert('Aktivasi Berhasil!', 'Selamat datang di Ruang Jurnal Anda.', [
-        { text: 'Masuk', onPress: () => setActivated(true) }
-      ]);
+      // 3. Sukses, ubah state global langsung (agar tidak terhalang kompatibilitas tombol Alert di Web)
+      if (Platform.OS === 'web') {
+        window.alert('Aktivasi Berhasil! Selamat datang di Ruang Jurnal Anda.');
+      } else {
+        Alert.alert('Aktivasi Berhasil!', 'Selamat datang di Ruang Jurnal Anda.');
+      }
+      
+      setActivated(true);
+
     } catch (error: any) {
-      console.error(error);
-      Alert.alert('Error', error.message || 'Terjadi kesalahan sistem.');
+      console.error('Activation try-catch error:', error);
+      const msg = error.message || 'Terjadi kesalahan sistem.';
+      Platform.OS === 'web' ? window.alert(msg) : Alert.alert('Error', msg);
     } finally {
       setLoading(false);
     }

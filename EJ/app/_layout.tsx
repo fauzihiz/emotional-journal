@@ -91,23 +91,31 @@ export default function RootLayout() {
 
   // 2. Handle navigation AFTER mount and initialization
   useEffect(() => {
-    if (!initialized || isActivated === null) return;
+    if (!initialized) return;
 
-    const inAuthGroup = segments[0] === '(auth)';
     const isLoginScreen = segments[1] === 'login';
-    const isActivateScreen = segments[1] === 'activate';
 
+    // Kasus 1: Tidak ada session
     if (!session && !isLoginScreen) {
-      // Not logged in -> Must Login
       console.log('No session, redirecting to login');
       router.replace('/(auth)/login');
-    } else if (session) {
+      return; 
+    }
+
+    // Kasus 2: Ada session, tapi status aktivasi masih diperiksa (loading)
+    if (session && isActivated === null) return;
+
+    // Kasus 3: Ada session dan status aktivasi sudah diketahui
+    const inAuthGroup = segments[0] === '(auth)';
+    const isActivateScreen = segments[1] === 'activate';
+
+    if (session) {
       if (!isActivated && !isActivateScreen) {
-        // Logged in, but NOT activated -> Must Activate
+        // Belum aktivasi -> Harus di layar Activate
         console.log('Session found, but NOT activated. Redirecting to Activate Screen');
         router.replace('/(auth)/activate');
       } else if (isActivated && inAuthGroup) {
-        // Logged in AND activated -> Go to App
+        // Sudah aktivasi dan masih terjebak di grup (auth) -> Masuk App
         console.log('Session found and activated. Redirecting to app');
         router.replace('/(app)');
       }

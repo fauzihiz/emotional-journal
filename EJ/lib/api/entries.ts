@@ -16,8 +16,7 @@ export async function fetchEntriesByMonth(year: number, month: number) {
   const endDate = `${year}-${String(month).padStart(2, '0')}-${lastDay}`;
 
   const { data, error } = await supabase
-    .from('entries')
-    .select('*')
+    .select('id, user_id, emotion_id, content, entry_date, created_at')
     .gte('entry_date', startDate)
     .lte('entry_date', endDate)
     .order('entry_date', { ascending: true });

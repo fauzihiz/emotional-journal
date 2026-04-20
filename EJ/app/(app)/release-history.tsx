@@ -32,7 +32,7 @@ export default function ReleaseHistoryScreen() {
     setLoading(true);
     const { data, error } = await supabase
       .from('release_sessions')
-      .select('*')
+      .select('id, emotion_id, released_text, before_score, after_score, duration, created_at')
       .order('created_at', { ascending: false });
 
     if (error) {

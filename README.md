@@ -48,15 +48,15 @@ Kami menggunakan 12 kategori emosi dengan spektrum warna gradasi:
 ### Fase 3: Guided Emotional Release (Therapy Mode) ✅
 - [x] Setup Tabel `release_sessions` di Supabase. ✅
 - [x] Implementasi **Letting Flow Therapy** (7 Langkah) ✅:
-    *   **Langkah 1**: Relaksasi Pernapasan (Ritme 4-6) dengan instruksi.
-    *   **Langkah 2**: *Letting Come* (Menghadirkan emosi negatif yang ingin dilepas).
-    *   **Langkah 3**: *Letting Stay* (Mengamati emosi sambil menjaga ritme bernapas).
-    *   **Langkah 4**: *Letting Go* (Pelepasan emosi via animasi teks melarut).
-    *   **Langkah 5**: *Post-Release Breathing* (Relaksasi napas penenang pasca-lepas).
-    *   **Langkah 6**: *Letting God* (Refleksi spiritual puitis & penyerahan - Random Text).
-    *   **Langkah 7**: *Ketenangan Akhir* (Penilaian skala ketenangan pasca-terapi).
+    *   Langkah 1 - 7: Dari Relaksasi Napas hingga Penilaian Akhir (Randomized Reflection).
+- [x] **Optimasi Performa Query**: Implementasi *Explicit Column Selection* (Hapus `select('*')`). ✅
 - [x] Integrasi Audio Lokal (`assets/audio/calm.mp3`). ✅
 - [x] Riwayat Sesi (History Release Emosi) dengan label status ketenangan. ✅
+
+### Fase 4: Refinement & Stabilitas PWA (Ongoing) 🚧
+- [x] Penanganan *Localhost Redirection Bug* (Navigasi absolut).
+- [x] Stabilitas Mutasi (Anti-Hang dengan `.select()`).
+- [x] Audit Indeks Database & Caching Strategi. ✅
 
 ### Fase 4: Offline & Performa (v1.1) ✅
 - [x] Implementasi React Query Persistence (AsyncStorage). ✅
@@ -110,8 +110,11 @@ Berikut adalah ringkasan masalah teknis yang dihadapi selama pengembangan dan ca
 - **Kendala**: Setelah memasukkan kode benar, layar tetap berputar (loading) atau tidak berpindah.
 - **Solusi**: 
     - Melakukan **Hard Refresh** (`Ctrl + Shift + R`) untuk membersihkan cache PWA lama.
-    - Memastikan kode dimasukkan dengan format lengkap (contoh: `EJ-XXXXX`).
-    - Gunakan fungsi `maybeSingle()` dan tambahkan `.select()` pada update query untuk menghindari *HTTP 204 No Content hang*.
+    - Gunakan fungsi `maybeSingle()` dan tambahkan `.select()` pada update query untuk menghindari *HTTP 204 No Content hang* yang sering terjadi di PWA.
+
+### 6. Redirect ke localhost Setelah Selesai Sesi
+- **Kendala**: Setelah klik "Simpan" pada sesi release, aplikasi malah terbuka ke alamat `localhost` atau tab kosong di browser.
+- **Solusi**: Mengganti rute navigasi dari `router.back()` (yang bergantung pada histori browser) menjadi rute absolut `router.replace('/')`.
 
 ## ⚠️ Known Issues (TODO)
 - [ ] **Email Confirmation**: Saat ini dimatikan untuk development. Harus diaktifkan kembali sebelum production.

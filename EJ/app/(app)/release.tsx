@@ -206,10 +206,11 @@ export default function ReleaseSessionScreen() {
         before_score: beforeScore,
         after_score: afterScore,
         duration: sessionDuration,
-      });
+      })
+      .select();
 
       if (error) throw error;
-      router.back();
+      router.replace('/');
     } catch (error) {
       console.error('Error saving session:', error);
       alert('Gagal menyimpan sesi. Silakan coba lagi.');

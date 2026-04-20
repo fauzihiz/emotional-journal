@@ -1,35 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Modal,
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  TextInput,
-  KeyboardAvoidingView,
-  Platform,
-  TouchableWithoutFeedback,
-  Keyboard,
-  ActivityIndicator,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+'use client'
+
+import { useState, useEffect } from 'react';
 import { Emotion } from '@/constants/emotions';
 import EmotionPicker from './EmotionPicker';
 import { useCreateEntry } from '@/hooks/useEntries';
 
 interface Props {
   visible: boolean;
-  dateStr: string; // 'YYYY-MM-DD'
+  dateStr: string;
+  userId: string | undefined;
   onClose: () => void;
 }
 
-export default function QuickLogModal({ visible, dateStr, onClose }: Props) {
+export default function QuickLogModal({ visible, dateStr, userId, onClose }: Props) {
   const [selectedEmotion, setSelectedEmotion] = useState<Emotion | null>(null);
   const [note, setNote] = useState('');
 
-  const createEntryMutation = useCreateEntry();
+  const createEntryMutation = useCreateEntry(userId);
 
-  // Reset state when modal opens
   useEffect(() => {
     if (visible) {
       setSelectedEmotion(null);
@@ -54,163 +42,73 @@ export default function QuickLogModal({ visible, dateStr, onClose }: Props) {
     );
   };
 
-  // Format date display (e.g., '2023-10-25' -> '25 Okt 2023')
   const dateObj = new Date(dateStr);
   const displayDate = isNaN(dateObj.getTime())
     ? dateStr
     : dateObj.toLocaleDateString('id-ID', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-    });
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+      });
+
+  if (!visible) return null;
 
   return (
-    <Modal visible={visible} transparent animationType="slide">
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.overlay}
-      >
-        {/* Clickable backdrop to close the modal */}
-        <TouchableOpacity
-          style={{ flex: 1, width: '100%' }}
-          onPress={onClose}
-          activeOpacity={1}
+    <div className="fixed inset-0 z-50 flex items-end justify-center">
+      {/* Backdrop */}
+      <div
+        className="absolute inset-0 bg-[#0F172A]/40"
+        onClick={onClose}
+      />
+
+      {/* Sheet */}
+      <div className="relative w-full max-w-lg bg-[#FDFBF7] rounded-t-[32px] p-6 pb-10 max-h-[90vh] overflow-y-auto shadow-2xl animate-in slide-in-from-bottom duration-300">
+        <div className="mb-6 text-center relative">
+          <h2 className="text-[22px] font-extrabold text-[#1E293B] mb-1">
+            Bagaimana perasaanmu?
+          </h2>
+          <p className="text-sm text-[#64748B] font-medium">{displayDate}</p>
+          <button
+            onClick={onClose}
+            className="absolute top-0 right-0 p-1 bg-[#F1F5F9] rounded-2xl hover:bg-[#E2E8F0] transition-colors"
+          >
+            <svg className="w-6 h-6 text-[#64748B]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+          </button>
+        </div>
+
+        <EmotionPicker
+          selected={selectedEmotion?.id ?? null}
+          onSelect={setSelectedEmotion}
         />
 
-        {/* Actual Form Container */}
-        <View style={styles.container}>
-          <View style={styles.header}>
-            <Text style={styles.title}>Bagaimana perasaanmu?</Text>
-            <Text style={styles.subtitle}>{displayDate}</Text>
-            <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
-              <Ionicons name="close" size={24} color="#64748B" />
-            </TouchableOpacity>
-          </View>
-
-          <EmotionPicker
-            selected={selectedEmotion?.id ?? null}
-            onSelect={setSelectedEmotion}
+        <div className="mt-6">
+          <label className="text-[15px] font-bold text-[#334155] mb-3 block">
+            Apa yang kamu rasakan saat ini?
+          </label>
+          <textarea
+            className="w-full bg-white rounded-2xl p-5 h-[120px] text-base text-[#1E293B] leading-6 shadow-sm resize-none outline-none focus:ring-2 focus:ring-[#4F46E5]/20"
+            placeholder="Yuk ceritakan kejadian hari ini..."
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
           />
+        </div>
 
-          <View style={styles.noteContainer}>
-            <Text style={styles.noteLabel}>Apa yang kamu rasakan saat ini?</Text>
-            <TextInput
-              style={styles.noteInput}
-              placeholder="Yuk ceritakan kejadian hari ini..."
-              value={note}
-              onChangeText={setNote}
-              multiline
-              textAlignVertical="top"
-            />
-          </View>
-
-          <TouchableOpacity
-            style={[
-              styles.saveButton,
-              !selectedEmotion && styles.saveButtonDisabled,
-            ]}
-            onPress={handleSave}
-            disabled={!selectedEmotion || createEntryMutation.isPending}
-          >
-            {createEntryMutation.isPending ? (
-              <ActivityIndicator color="#fff" />
-            ) : (
-              <Text style={styles.saveButtonText}>Simpan Jurnal</Text>
-            )}
-          </TouchableOpacity>
-        </View>
-      </KeyboardAvoidingView>
-    </Modal>
+        <button
+          className={`w-full h-[60px] rounded-2xl flex items-center justify-center mt-8 font-bold text-base text-white transition-all ${
+            selectedEmotion
+              ? 'bg-[#4F46E5] shadow-lg shadow-[#4F46E5]/20 hover:bg-[#4338CA]'
+              : 'bg-[#CBD5E1] cursor-not-allowed'
+          }`}
+          onClick={handleSave}
+          disabled={!selectedEmotion || createEntryMutation.isPending}
+        >
+          {createEntryMutation.isPending ? (
+            <span className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full" />
+          ) : (
+            'Simpan Jurnal'
+          )}
+        </button>
+      </div>
+    </div>
   );
 }
-
-const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(15, 23, 42, 0.4)', // lighter overlay
-    justifyContent: 'flex-end',
-  },
-  container: {
-    backgroundColor: '#FDFBF7',
-    borderTopLeftRadius: 32,
-    borderTopRightRadius: 32,
-    padding: 24,
-    paddingBottom: Platform.OS === 'ios' ? 40 : 24,
-    maxHeight: '90%',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-    elevation: 20,
-  },
-  header: {
-    marginBottom: 24,
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: '800',
-    color: '#1E293B',
-    marginBottom: 4,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: '#64748B',
-    fontWeight: '500',
-  },
-  closeBtn: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    padding: 4,
-    backgroundColor: '#F1F5F9',
-    borderRadius: 16,
-  },
-  noteContainer: {
-    marginTop: 24,
-  },
-  noteLabel: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: '#334155',
-    marginBottom: 12,
-  },
-  noteInput: {
-    backgroundColor: '#ffffff',
-    borderWidth: 0,
-    borderRadius: 16,
-    padding: 20,
-    height: 120,
-    fontSize: 16,
-    color: '#1E293B',
-    lineHeight: 24,
-    shadowColor: '#94A3B8',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 2,
-  },
-  saveButton: {
-    backgroundColor: '#4F46E5', // Warm Indigo
-    borderRadius: 16,
-    height: 60,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 32,
-    shadowColor: '#4F46E5',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  saveButtonDisabled: {
-    backgroundColor: '#CBD5E1',
-    shadowOpacity: 0,
-    elevation: 0,
-  },
-  saveButtonText: {
-    color: '#ffffff',
-    fontSize: 16,
-    fontWeight: '700',
-  },
-});

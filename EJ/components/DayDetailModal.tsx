@@ -1,14 +1,6 @@
-import React, { useState } from 'react';
-import {
-  Modal,
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  Platform,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+'use client'
+
+import { useState } from 'react';
 import { EntryRow } from '@/lib/api/entries';
 import { getEmotionById } from '@/constants/emotions';
 
@@ -20,44 +12,42 @@ interface DayDetailModalProps {
   onAddEntry: () => void;
 }
 
-const EntryCard = ({ entry }: { entry: EntryRow }) => {
+function EntryCard({ entry }: { entry: EntryRow }) {
   const [expanded, setExpanded] = useState(false);
   const emotion = getEmotionById(entry.emotion_id);
 
   if (!emotion) return null;
 
   return (
-    <View style={styles.card}>
-      <View style={styles.cardHeader}>
-        <Text style={styles.cardEmoji}>{emotion.emoji}</Text>
-        <Text style={[styles.cardTitle, { color: emotion.color }]}>
-          {emotion.label}
-        </Text>
-      </View>
-      {entry.content ? (
-        <TouchableOpacity
-          activeOpacity={0.7}
-          onPress={() => setExpanded(!expanded)}
-          style={styles.cardContentBox}
+    <div className="bg-white rounded-[20px] p-5 shadow-sm">
+      <div className="flex items-center mb-3">
+        <span className="text-[28px] mr-2.5">{emotion.emoji}</span>
+        <span
+          className="text-[17px] font-extrabold tracking-tight"
+          style={{ color: emotion.color }}
         >
-          <Text
-            style={styles.cardContent}
-            numberOfLines={expanded ? undefined : 3}
-          >
+          {emotion.label}
+        </span>
+      </div>
+      {entry.content ? (
+        <button
+          className="w-full text-left bg-[#FDFBF7] p-4 rounded-xl mt-1"
+          onClick={() => setExpanded(!expanded)}
+        >
+          <p className={`text-[15px] text-[#475569] leading-6 ${!expanded ? 'line-clamp-3' : ''}`}>
             {entry.content}
-          </Text>
-          <Text style={styles.expandHint}>
+          </p>
+          <span className="text-[13px] text-[#4F46E5] font-bold mt-2 inline-block">
             {expanded ? 'Tutup' : 'Baca selengkapnya...'}
-          </Text>
-        </TouchableOpacity>
+          </span>
+        </button>
       ) : null}
-      
-      <Text style={styles.timeLabel}>
+      <p className="text-xs text-[#94A3B8] font-semibold mt-4 text-right">
         {new Date(entry.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
-      </Text>
-    </View>
+      </p>
+    </div>
   );
-};
+}
 
 export default function DayDetailModal({
   visible,
@@ -76,175 +66,53 @@ export default function DayDetailModal({
         year: 'numeric',
       });
 
+  if (!visible) return null;
+
   return (
-    <Modal visible={visible} transparent animationType="slide">
-      <View style={styles.overlay}>
-        <View style={styles.container}>
-          <View style={styles.header}>
-            <Text style={styles.title}>Jurnal Hari Ini</Text>
-            <Text style={styles.subtitle}>{displayDate}</Text>
-            <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
-              <Ionicons name="close" size={24} color="#64748B" />
-            </TouchableOpacity>
-          </View>
+    <div className="fixed inset-0 z-50 flex items-end justify-center">
+      {/* Backdrop */}
+      <div className="absolute inset-0 bg-[#0F172A]/40" onClick={onClose} />
 
-          <ScrollView style={styles.scrollArea}>
-            {entries.length === 0 ? (
-              <View style={styles.emptyState}>
-                <Ionicons name="journal-outline" size={48} color="#CBD5E1" />
-                <Text style={styles.emptyStateText}>
-                  Belum ada catatan emosi pada hari ini.
-                </Text>
-              </View>
-            ) : (
-              <View style={styles.list}>
-                {entries.map((entry) => (
-                  <EntryCard key={entry.id} entry={entry} />
-                ))}
-              </View>
-            )}
-          </ScrollView>
+      {/* Sheet */}
+      <div className="relative w-full max-w-lg bg-[#FDFBF7] rounded-t-[32px] p-6 pb-10 h-[85%] flex flex-col shadow-2xl animate-in slide-in-from-bottom duration-300">
+        <div className="mb-5 text-center relative">
+          <h2 className="text-[22px] font-extrabold text-[#1E293B] mb-1">Jurnal Hari Ini</h2>
+          <p className="text-sm text-[#64748B] font-medium">{displayDate}</p>
+          <button
+            onClick={onClose}
+            className="absolute top-0 right-0 p-1 bg-[#F1F5F9] rounded-2xl hover:bg-[#E2E8F0] transition-colors"
+          >
+            <svg className="w-6 h-6 text-[#64748B]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+          </button>
+        </div>
 
-          <View style={styles.footer}>
-            <TouchableOpacity style={styles.addButton} onPress={onAddEntry}>
-              <Ionicons name="add" size={20} color="#fff" />
-              <Text style={styles.addButtonText}>Tambah Entri Baru</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
-    </Modal>
+        <div className="flex-1 overflow-y-auto">
+          {entries.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-16">
+              <svg className="w-12 h-12 text-[#CBD5E1] mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+              <p className="text-[#94A3B8] text-[15px] font-medium">
+                Belum ada catatan emosi pada hari ini.
+              </p>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-4 pb-6">
+              {entries.map((entry) => (
+                <EntryCard key={entry.id} entry={entry} />
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="mt-4">
+          <button
+            className="w-full h-[60px] rounded-2xl bg-[#4F46E5] flex items-center justify-center gap-2 text-white font-bold text-base shadow-lg shadow-[#4F46E5]/20 hover:bg-[#4338CA] transition-colors"
+            onClick={onAddEntry}
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+            Tambah Entri Baru
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
-
-const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(15, 23, 42, 0.4)', // lighter overlay
-    justifyContent: 'flex-end',
-  },
-  container: {
-    backgroundColor: '#FDFBF7',
-    borderTopLeftRadius: 32,
-    borderTopRightRadius: 32,
-    padding: 24,
-    paddingBottom: Platform.OS === 'ios' ? 40 : 24,
-    height: '85%', 
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-    elevation: 20,
-  },
-  header: {
-    marginBottom: 20,
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: '800',
-    color: '#1E293B',
-    marginBottom: 4,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: '#64748B',
-    fontWeight: '500',
-  },
-  closeBtn: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    padding: 4,
-    backgroundColor: '#F1F5F9',
-    borderRadius: 16,
-  },
-  scrollArea: {
-    flex: 1,
-  },
-  emptyState: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 64,
-  },
-  emptyStateText: {
-    color: '#94A3B8',
-    marginTop: 16,
-    fontSize: 15,
-    fontWeight: '500',
-  },
-  list: {
-    gap: 16,
-    paddingBottom: 24,
-  },
-  card: {
-    backgroundColor: '#ffffff',
-    borderRadius: 20,
-    padding: 20,
-    shadowColor: '#94A3B8',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.08,
-    shadowRadius: 12,
-    elevation: 2,
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  cardEmoji: {
-    fontSize: 28,
-    marginRight: 10,
-  },
-  cardTitle: {
-    fontSize: 17,
-    fontWeight: '800',
-    letterSpacing: -0.3,
-  },
-  cardContentBox: {
-    backgroundColor: '#FDFBF7',
-    padding: 16,
-    borderRadius: 12,
-    marginTop: 4,
-  },
-  cardContent: {
-    fontSize: 15,
-    color: '#475569',
-    lineHeight: 24,
-  },
-  expandHint: {
-    fontSize: 13,
-    color: '#4F46E5',
-    fontWeight: '700',
-    marginTop: 8,
-  },
-  timeLabel: {
-    fontSize: 12,
-    color: '#94A3B8',
-    fontWeight: '600',
-    marginTop: 16,
-    textAlign: 'right',
-  },
-  footer: {
-    marginTop: 16,
-  },
-  addButton: {
-    flexDirection: 'row',
-    backgroundColor: '#4F46E5',
-    borderRadius: 16,
-    height: 60,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    shadowColor: '#4F46E5',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  addButtonText: {
-    color: '#ffffff',
-    fontSize: 16,
-    fontWeight: '700',
-  },
-});

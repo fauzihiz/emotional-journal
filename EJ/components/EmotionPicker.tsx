@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+'use client'
+
 import { EMOTIONS, Emotion } from '@/constants/emotions';
 
 interface Props {
@@ -9,70 +9,30 @@ interface Props {
 
 export default function EmotionPicker({ selected, onSelect }: Props) {
   return (
-    <View style={styles.grid}>
+    <div className="flex flex-wrap justify-center gap-2.5">
       {EMOTIONS.map((emotion) => {
         const isSelected = selected === emotion.id;
         return (
-          <TouchableOpacity
+          <button
             key={emotion.id}
-            style={[
-              styles.item,
-              { borderColor: emotion.color },
-              isSelected && { backgroundColor: emotion.color },
-            ]}
-            onPress={() => onSelect(emotion)}
-            activeOpacity={0.7}
+            type="button"
+            className="w-[22%] min-w-[68px] aspect-square rounded-[20px] flex flex-col items-center justify-center border transition-all shadow-sm"
+            style={{
+              borderColor: emotion.color,
+              backgroundColor: isSelected ? emotion.color : '#ffffff',
+            }}
+            onClick={() => onSelect(emotion)}
           >
-            <Text style={styles.emoji}>{emotion.emoji}</Text>
-            <Text
-              style={[
-                styles.label,
-                isSelected && styles.selectedLabel,
-              ]}
+            <span className="text-[28px] mb-1">{emotion.emoji}</span>
+            <span
+              className="text-[11px] font-bold text-center"
+              style={{ color: isSelected ? '#ffffff' : '#475569' }}
             >
               {emotion.label}
-            </Text>
-          </TouchableOpacity>
+            </span>
+          </button>
         );
       })}
-    </View>
+    </div>
   );
 }
-
-const styles = StyleSheet.create({
-  grid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    gap: 10,
-  },
-  item: {
-    width: '22%',
-    aspectRatio: 1,
-    borderRadius: 20, // squircle form
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#ffffff',
-    minWidth: 68,
-    borderWidth: 1,
-    borderColor: 'transparent',
-    shadowColor: '#94A3B8',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 2,
-  },
-  emoji: {
-    fontSize: 28, // slight increase
-    marginBottom: 4,
-  },
-  label: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: '#475569',
-    textAlign: 'center',
-  },
-  selectedLabel: {
-    color: '#ffffff',
-  },
-});

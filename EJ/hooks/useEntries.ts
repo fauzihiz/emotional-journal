@@ -1,19 +1,19 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchEntriesByMonth, createEntry, deleteEntry } from '@/lib/api/entries';
 
-export function useMonthEntries(year: number, month: number) {
+export function useMonthEntries(userId: string | undefined, year: number, month: number) {
   const today = new Date();
   const isPastMonth = year < today.getFullYear() || (year === today.getFullYear() && month < today.getMonth() + 1);
 
   return useQuery({
-    queryKey: ['entries', year, month],
+    queryKey: ['entries', userId, year, month],
     queryFn: () => fetchEntriesByMonth(year, month),
-    // Past months rarely change, cache them for 1 hour. Current/Future months 5 mins (global default).
+    enabled: !!userId,
     staleTime: isPastMonth ? 1000 * 60 * 60 : 1000 * 60 * 5,
   });
 }
 
-export function useCreateEntry() {
+export function useCreateEntry(userId: string | undefined) {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -23,27 +23,23 @@ export function useCreateEntry() {
       const year = date.getFullYear();
       const month = date.getMonth() + 1;
       
-      // Invalidate the specific month cache
       queryClient.invalidateQueries({
-        queryKey: ['entries', year, month],
+        queryKey: ['entries', userId, year, month],
       });
       
-      // Also invalidate stats or global if needed
-      queryClient.invalidateQueries({ queryKey: ['stats'] });
+      queryClient.invalidateQueries({ queryKey: ['stats', userId] });
     },
   });
 }
 
-export function useDeleteEntry() {
+export function useDeleteEntry(userId: string | undefined) {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: deleteEntry,
-    onSuccess: (_, entryId) => {
-      // Since we don't know the exact date in the success callback easily without data, 
-      // we invalidate all entries to be safe, but we could optimize this if we pass date.
-      queryClient.invalidateQueries({ queryKey: ['entries'] });
-      queryClient.invalidateQueries({ queryKey: ['stats'] });
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['entries', userId] });
+      queryClient.invalidateQueries({ queryKey: ['stats', userId] });
     },
   });
 }

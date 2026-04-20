@@ -1,23 +1,28 @@
 openapi: 3.0.0
 info:
-  title: Emotional Journal API
-  version: 1.0.0
-  description: API for managing emotional micro-journaling entries.
+  title: Emotional Journal API (Next.js PWA)
+  version: 1.1.0
+  description: API for managing emotional micro-journaling and therapy sessions.
+  contact:
+    name: Fauzihiz
+    url: https://fauzihiz.github.io/
 
 paths:
   /entries:
     get:
-      summary: List all journal entries for the authenticated user
+      summary: List journal entries for the authenticated user
       parameters:
         - name: start_date
           in: query
-          schema: { type: string, format: date
-}
+          schema:
+            type: string
+            format: date
           description: Filter entries starting from this date (YYYY-MM-DD)
         - name: end_date
           in: query
-          schema: { type: string, format: date
-}
+          schema:
+            type: string
+            format: date
           description: Filter entries up to this date (YYYY-MM-DD)
       responses:
         '200':
@@ -26,8 +31,8 @@ paths:
             application/json:
               schema:
                 type: array
-                items: { $ref: '#/components/schemas/Entry'
-}
+                items:
+                  $ref: '#/components/schemas/Entry'
     
     post:
       summary: Create a new journal entry
@@ -35,14 +40,29 @@ paths:
         required: true
         content:
           application/json:
-            schema: { $ref: '#/components/schemas/NewEntry'
-}
+            schema:
+              $ref: '#/components/schemas/NewEntry'
       responses:
         '201':
           description: Entry created successfully
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/Entry' }
+              schema:
+                $ref: '#/components/schemas/Entry'
+
+  /entries/{id}:
+    delete:
+      summary: Delete a journal entry
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Entry deleted successfully
 
   /release_sessions:
     get:
@@ -54,22 +74,40 @@ paths:
             application/json:
               schema:
                 type: array
-                items: { $ref: '#/components/schemas/ReleaseSession' }
+                items:
+                  $ref: '#/components/schemas/ReleaseSession'
+    post:
+      summary: Log a completed release session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewReleaseSession'
+      responses:
+        '201':
+          description: Session logged successfully
 
   /activation_codes:
     patch:
-      summary: Claim an activation code by a user
+      summary: Claim an activation code
+      description: Marks a license code as used by the current user.
       requestBody:
-        description: The code to claim
         required: true
         content:
           application/json:
             schema:
               type: object
               properties:
-                is_used: { type: boolean, example: true }
-                used_by_user_id: { type: string, format: uuid }
-                used_at: { type: string, format: date-time }
+                is_used:
+                  type: boolean
+                  example: true
+                used_by_user_id:
+                  type: string
+                  format: uuid
+                used_at:
+                  type: string
+                  format: date-time
       responses:
         '200':
           description: Code successfully claimed
@@ -79,45 +117,100 @@ components:
     Entry:
       type: object
       properties:
-        id: { type: string, format: uuid
-}
-        emotion_id: { type: integer, example: 5
-}
-        content: { type: string, example: "Feeling great today!"
-}
-        entry_date: { type: string, format: date, example: "2026-04-01"
-}
-        created_at: { type: string, format: date-time
-}
+        id:
+          type: string
+          format: uuid
+        emotion_id:
+          type: integer
+          example: 8
+        content:
+          type: string
+          nullable: true
+          example: "Feeling very productive today!"
+        entry_date:
+          type: string
+          format: date
+          example: "2026-04-20"
+        created_at:
+          type: string
+          format: date-time
     
     NewEntry:
       type: object
-      required: [emotion_id
-]
+      required:
+        - emotion_id
+        - entry_date
       properties:
-        emotion_id: { type: integer, minimum: 1, maximum: 5
-}
-        content: { type: string, maxLength: 1000
-}
-        entry_date: { type: string, format: date, description: "Defaults to today if null"
-}
+        emotion_id:
+          type: integer
+          minimum: 1
+          maximum: 12
+          description: "ID of the emotion (1-12)"
+        content:
+          type: string
+          maxLength: 2000
+          nullable: true
+        entry_date:
+          type: string
+          format: date
+          example: "2026-04-20"
 
     ReleaseSession:
       type: object
       properties:
-        id: { type: string, format: uuid }
-        emotion_id: { type: integer, example: 2 }
-        released_text: { type: string, example: "Saya memaafkan masa lalu." }
-        before_score: { type: integer, example: 2 }
-        after_score: { type: integer, example: 8 }
-        duration: { type: integer, description: "Duration in seconds", example: 120 }
-        created_at: { type: string, format: date-time }
+        id:
+          type: string
+          format: uuid
+        emotion_id:
+          type: integer
+        released_text:
+          type: string
+          nullable: true
+        before_score:
+          type: integer
+        after_score:
+          type: integer
+        duration:
+          type: integer
+          description: "Duration in seconds"
+        created_at:
+          type: string
+          format: date-time
+
+    NewReleaseSession:
+      type: object
+      required:
+        - emotion_id
+        - before_score
+        - after_score
+        - duration
+      properties:
+        emotion_id:
+          type: integer
+        released_text:
+          type: string
+          nullable: true
+        before_score:
+          type: integer
+        after_score:
+          type: integer
+        duration:
+          type: integer
 
     ActivationCode:
       type: object
       properties:
-        id: { type: string, format: uuid }
-        code: { type: string, example: "EJ-A9Z2X" }
-        is_used: { type: boolean, example: true }
-        used_by_user_id: { type: string, format: uuid }
-        used_at: { type: string, format: date-time }
+        id:
+          type: string
+          format: uuid
+        code:
+          type: string
+          example: "EJ-X9K2P"
+        is_used:
+          type: boolean
+        used_by_user_id:
+          type: string
+          format: uuid
+        used_at:
+          type: string
+          format: date-time

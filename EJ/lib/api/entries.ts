@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/client'
 
 export interface EntryRow {
   id: string;
@@ -9,14 +9,15 @@ export interface EntryRow {
   created_at: string;
 }
 
-// Fetch all entries for a specific month
 export async function fetchEntriesByMonth(year: number, month: number) {
+  const supabase = createClient();
   const startDate = `${year}-${String(month).padStart(2, '0')}-01`;
   const lastDay = new Date(year, month, 0).getDate();
   const endDate = `${year}-${String(month).padStart(2, '0')}-${lastDay}`;
 
+  const { data, error } = await supabase
     .from('entries')
-    .select('id, user_id, emotion_id, entry_date, created_at')
+    .select('id, user_id, emotion_id, content, entry_date, created_at')
     .gte('entry_date', startDate)
     .lte('entry_date', endDate)
     .order('entry_date', { ascending: true });
@@ -25,12 +26,12 @@ export async function fetchEntriesByMonth(year: number, month: number) {
   return (data as EntryRow[]) ?? [];
 }
 
-// Create a new entry
 export async function createEntry(params: {
   emotion_id: number;
   content?: string;
-  entry_date: string; // 'YYYY-MM-DD'
+  entry_date: string;
 }) {
+  const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error('Not authenticated');
 
@@ -49,8 +50,8 @@ export async function createEntry(params: {
   return data as EntryRow;
 }
 
-// Delete an entry
 export async function deleteEntry(id: string) {
+  const supabase = createClient();
   const { error } = await supabase.from('entries').delete().eq('id', id);
   if (error) throw error;
 }

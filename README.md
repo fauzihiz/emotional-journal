@@ -20,12 +20,13 @@ Aplikasi ini dibangun dengan teknologi terkini untuk memastikan performa yang ce
 ### 1. Galaxy Mesh Heatmap
 Visualisasi kalender unik yang menggambarkan spektrum emosi Anda. Jika dalam satu hari terdapat beberapa entri emosi, kalender akan menampilkan gradasi warna yang indah (Mesh Gradient), menciptakan pola unik setiap bulan.
 
-### 2. Guided Emotional Release (Letting Flow Therapy)
-Fitur terapi mandiri dengan 7 langkah terpandu:
-- **Relaksasi Napas**: Mengatur ritme napas dengan panduan visual dan audio meditasi.
-- **Letting Come & Stay**: Mengakui dan mengamati hadirnya emosi tanpa menolak.
-- **Letting Go**: Menuliskan dan merilis beban emosi secara visual (Dissolve animation).
-- **Letting God**: Menyerahkan hasil akhir dan refleksi spiritual yang menenangkan.
+### 2. Sesi Release Emosi
+Fitur terapi mandiri terpandu dengan 5 tahapan utama:
+- **Sadari perasaan yang datang**: Menghadirkan kesadaran penuh terhadap gejolak emosi.
+- **Izinkan perasaan itu ada**: Mengamati keberadaan emosi tanpa mencoba membendungnya.
+- **Rasakan, jangan dilawan**: Merasakan sensasi emosi di tubuh dengan ritme napas (Tarik-Tahan-Buang).
+- **Lepaskan, biarkan mengalir**: Menuliskan dan merilis beban emosi secara visual (Dissolve animation).
+- **Serahkan pada Allah**: Kepasrahan total dan refleksi spiritual untuk ketenangan batin.
 
 ### 3. Monetization & Security Gate
 Sistem aktivasi akun berbasis lisensi. Pengguna hanya dapat mengakses Dashboard penuh setelah melakukan aktivasi menggunakan kode akses unik, memungkinkan model bisnis SaaS atau penjualan lisensi mandiri.

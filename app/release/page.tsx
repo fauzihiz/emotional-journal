@@ -112,8 +112,10 @@ export default function ReleaseSessionScreen() {
           if (t > 1) return t - 1;
 
           setBreathLabel((prev) => {
-            const isFinishedInhale = prev.includes('Tarik');
-            if (isFinishedInhale) {
+            if (prev.includes('Tarik')) {
+              setBreathTimer(1);
+              return 'Tahan napas';
+            } else if (prev.includes('Tahan')) {
               setBreathTimer(6);
               return 'Buang napas lewat mulut';
             } else {
@@ -177,7 +179,7 @@ export default function ReleaseSessionScreen() {
     <div className="flex flex-col items-center w-full animate-in fade-in">
       <div className="bg-[#1E293B] px-4 py-1.5 rounded-[20px] mb-5">
         <span className="text-[#6366F1] text-xs font-bold uppercase tracking-[1px]">
-          Letting Flow Therapy
+          Sesi Release Emosi
         </span>
       </div>
 
@@ -185,12 +187,16 @@ export default function ReleaseSessionScreen() {
         <>
           <p className="text-[22px] text-[#F8FAFC] text-center leading-9 font-semibold mb-10">
             Mari kita mulai dengan mengatur pernapasan agar rileks.{'\n'}
-            Silakan posisikan diri senyaman mungkin, sambil sadari napas, buang perlahan.
+            Silakan posisikan diri senyaman mungkin, sadari napas, dan ikuti panduan berikut.
           </p>
           <div className="bg-[#1E293B] p-6 rounded-3xl w-full mb-10 flex flex-col gap-4">
             <div className="flex items-center gap-3">
               <svg className="w-6 h-6 text-[#6366F1]" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
               <span className="text-[#F8FAFC] text-base">Tarik napas lewat <strong className="text-white">hidung</strong> (4 detik)</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <svg className="w-6 h-6 text-[#10B981]" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <span className="text-[#F8FAFC] text-base">Tahan napas (1 detik)</span>
             </div>
             <div className="flex items-center gap-3">
               <svg className="w-6 h-6 text-[#EF4444]" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
@@ -223,9 +229,9 @@ export default function ReleaseSessionScreen() {
 
   const renderStep2 = () => (
     <div className="flex flex-col items-center w-full animate-in fade-in">
-      <h2 className="text-[22px] font-extrabold text-[#6366F1] mb-4 text-center">1. Letting Come (Hadir)</h2>
+      <h2 className="text-[22px] font-extrabold text-[#6366F1] mb-4 text-center">1. Sadari perasaan yang datang</h2>
       <p className="text-base text-[#94A3B8] text-center mb-8 leading-6">
-        Izinkan perasaan ini hadir. Jangan ditolak, jangan ditekan. Apa yang kamu rasakan saat ini?
+        Hadirkan kesadaran penuh. Rasakan apa yang sedang bergejolak di dalam dirimu saat ini.
       </p>
       <div className="flex flex-wrap justify-center gap-3 mb-10">
         {EMOTIONS.slice(0, 6).map((emp) => (
@@ -255,9 +261,9 @@ export default function ReleaseSessionScreen() {
 
   const renderStep3 = () => (
     <div className="flex flex-col items-center w-full animate-in fade-in">
-      <h2 className="text-[22px] font-extrabold text-[#6366F1] mb-4 text-center">2. Letting Stay (Amati)</h2>
+      <h2 className="text-[22px] font-extrabold text-[#6366F1] mb-4 text-center">2. Izinkan perasaan itu ada</h2>
       <p className="text-base text-[#94A3B8] text-center mb-8 leading-6">
-        Saksikan & Amati perasaan ini... Biarkan ia mengalir sambil menjaga ritme napasmu.
+        Jangan ditolak, jangan ditekan. Amati saja keberadaannya sambil terus bernapas tenang.
       </p>
       <div className="w-[260px] h-[260px] flex items-center justify-center relative mb-[50px]">
         <BreathingCircle active={isBreathingActive} />
@@ -277,10 +283,29 @@ export default function ReleaseSessionScreen() {
   );
 
   const renderStep4 = () => (
-    <div className="flex flex-col items-center w-full">
-      <h2 className="text-[22px] font-extrabold text-[#6366F1] mb-4 text-center">3. Letting Go (Merelakan)</h2>
+    <div className="flex flex-col items-center w-full animate-in fade-in">
+      <h2 className="text-[22px] font-extrabold text-[#6366F1] mb-4 text-center">3. Rasakan, jangan dilawan</h2>
       <p className="text-base text-[#94A3B8] text-center mb-8 leading-6">
-        Tuangkan apa yang ingin kamu lepaskan. Merelakan adalah membebaskan diri.
+        Biarkan ia mengalir sepenuhnya. Rasakan sensasinya di tubuhmu tanpa memberikan perlawanan.
+      </p>
+      <div className="w-[260px] h-[260px] flex items-center justify-center relative mb-[50px]">
+        <BreathingCircle active={isBreathingActive} />
+        <div className="flex flex-col items-center z-10">
+          <span className="text-[56px] font-black text-white mb-2.5">{breathTimer}</span>
+          <span className="text-lg font-bold text-white text-center">{breathLabel}</span>
+        </div>
+      </div>
+      <button className="bg-[#4F46E5] px-10 py-[18px] rounded-[20px] shadow-lg shadow-[#4F46E5]/30" onClick={nextStep}>
+        <span className="text-white text-base font-bold">Lanjutkan</span>
+      </button>
+    </div>
+  );
+
+  const renderStep5 = () => (
+    <div className="flex flex-col items-center w-full animate-in fade-in">
+      <h2 className="text-[22px] font-extrabold text-[#6366F1] mb-4 text-center">4. Lepaskan, biarkan mengalir</h2>
+      <p className="text-base text-[#94A3B8] text-center mb-8 leading-6">
+        Tuliskan apa yang ingin kamu lepaskan. Biarkan ia mengalir keluar bersama tulisanmu.
       </p>
       <div className={`w-full mb-10 transition-all duration-[2000ms] ${isDissolving ? 'opacity-0 scale-150' : 'opacity-100 scale-100'}`}>
         <textarea
@@ -293,34 +318,18 @@ export default function ReleaseSessionScreen() {
       <button
         className={`px-10 py-5 rounded-3xl ${releasedText ? 'bg-[#EF4444]' : 'bg-[#1E293B]'}`}
         onClick={handleDissolve}
-        disabled={!releasedText}
+        disabled={!releasedText || isDissolving}
       >
-        <span className="text-white text-base font-bold">Lepaskan</span>
-      </button>
-    </div>
-  );
-
-  const renderStep5 = () => (
-    <div className="flex flex-col items-center w-full animate-in fade-in">
-      <p className="text-base text-[#94A3B8] text-center mb-8 leading-6">
-        Rasakan, bayangkan, setiap tarikan napas membuat tubuh jauh lebih rileks, jauh lebih nyaman.
-      </p>
-      <div className="w-[260px] h-[260px] flex items-center justify-center relative mb-[50px]">
-        <BreathingCircle active={isBreathingActive} />
-        <div className="flex flex-col items-center z-10">
-          <span className="text-[56px] font-black text-white mb-2.5">{breathTimer}</span>
-          <span className="text-lg font-bold text-white text-center">{breathLabel}</span>
-        </div>
-      </div>
-      <button className="bg-[#4F46E5] px-10 py-[18px] rounded-[20px] shadow-lg shadow-[#4F46E5]/30" onClick={nextStep}>
-        <span className="text-white text-base font-bold">Lanjutkan ke Refleksi</span>
+        <span className="text-white text-base font-bold">
+          {isDissolving ? 'Melepaskan...' : 'Lepaskan'}
+        </span>
       </button>
     </div>
   );
 
   const renderStep6 = () => (
     <div className="flex flex-col items-center w-full animate-in fade-in">
-      <h2 className="text-[22px] font-extrabold text-[#6366F1] mb-4 text-center">4. Letting God (Menyerahkan)</h2>
+      <h2 className="text-[22px] font-extrabold text-[#6366F1] mb-4 text-center">5. Serahkan pada Allah</h2>
       <span className="text-[64px] mb-6">✨</span>
 
       <div className="bg-[#1E293B] p-8 rounded-[32px] w-full mb-10 border-l-4 border-l-[#6366F1]">

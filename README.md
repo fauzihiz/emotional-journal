@@ -30,7 +30,10 @@ Fitur terapi mandiri terpandu dengan 5 tahapan utama:
 - **Serahkan pada Allah**: Kepasrahan total dan refleksi spiritual untuk ketenangan batin.
 
 ### 3. Monetization & Security Gate
-Sistem aktivasi akun berbasis lisensi. Pengguna hanya dapat mengakses Dashboard penuh setelah melakukan aktivasi menggunakan kode akses unik, memungkinkan model bisnis SaaS atau penjualan lisensi mandiri.
+Sistem aktivasi akun berbasis lisensi yang **diperketat melalui Middleware**:
+- Pengguna yang baru login/daftar wajib melewati halaman aktivasi sebelum dapat mengakses Dashboard.
+- Validasi dilakukan di sisi server untuk mencegah bypass URL secara manual.
+- Mendukung integrasi dengan payment gateway (seperti Lynk.id) untuk pengiriman kode otomatis.
 
 ### 4. Zero-Friction Logging
 Formulir input yang cepat dengan pilihan emosi berbasis *chip* warna-warni, memungkinkan pencatatan perasaan kurang dari 10 detik.

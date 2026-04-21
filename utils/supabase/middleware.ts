@@ -31,15 +31,30 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  if (
-    !user &&
-    !request.nextUrl.pathname.startsWith('/login') &&
-    !request.nextUrl.pathname.startsWith('/auth')
-  ) {
+  const isAuthPage = request.nextUrl.pathname.startsWith('/login') || 
+                     request.nextUrl.pathname.startsWith('/auth')
+  const isActivatePage = request.nextUrl.pathname.startsWith('/activate')
+
+  if (!user && !isAuthPage) {
     // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     return NextResponse.redirect(url)
+  }
+
+  if (user && !isAuthPage && !isActivatePage) {
+    // Check if user is activated
+    const { data: activation } = await supabase
+      .from('activation_codes')
+      .select('id')
+      .eq('used_by_user_id', user.id)
+      .maybeSingle()
+
+    if (!activation) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/activate'
+      return NextResponse.redirect(url)
+    }
   }
 
   return supabaseResponse

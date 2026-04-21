@@ -44,6 +44,11 @@ Formulir input yang cepat dengan pilihan emosi berbasis *chip* warna-warni, memu
 - **Masalah**: Kegagalan build di Vercel karena struktur folder subdirektori.
 - **Solusi**: Memindahkan proyek Next.js dari folder `EJ/` langsung ke **root directory** agar terdeteksi secara otomatis oleh Vercel.
 
+### 3. Looping pada Tahap "Lepaskan"
+- **Masalah**: Saat sesi release emosi, alur berhenti dan mengulang (loop) di tahap penulisan teks.
+- **Penyebab**: Ketidaksesuaian indeks langkah (*step index*) pada fungsi `handleDissolve` dan `useEffect` setelah reposisi tahapan menjadi 5 langkah.
+- **Solusi**: Sinkronisasi pemetaan alur langkah sehingga Langkah 5 (Lepaskan) secara konsisten diteruskan ke Langkah 6 (Serahkan pada Allah).
+
 ## 🚀 Instalasi & Pengembangan
 1. **Clone & Install**:
    ```bash

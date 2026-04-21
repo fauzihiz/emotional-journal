@@ -106,7 +106,7 @@ export default function ReleaseSessionScreen() {
   useEffect(() => {
     let interval: ReturnType<typeof setInterval>;
 
-    if ((step === 1 || step === 3 || step === 5) && isBreathingActive) {
+    if ((step === 1 || step === 3 || step === 4) && isBreathingActive) {
       interval = setInterval(() => {
         setBreathTimer((t) => {
           if (t > 1) return t - 1;
@@ -129,7 +129,7 @@ export default function ReleaseSessionScreen() {
       }, 1000);
 
       return () => clearInterval(interval);
-    } else if (step === 4) {
+    } else if (step === 5) {
       setIsTimerRunning(true);
     } else {
       setIsTimerRunning(false);
@@ -139,7 +139,7 @@ export default function ReleaseSessionScreen() {
   const handleDissolve = () => {
     setIsDissolving(true);
     setTimeout(() => {
-      setStep(5);
+      setStep(6);
       setIsDissolving(false);
     }, 2000);
   };

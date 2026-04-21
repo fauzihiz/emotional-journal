@@ -106,7 +106,7 @@ export default function ReleaseSessionScreen() {
   useEffect(() => {
     let interval: ReturnType<typeof setInterval>;
 
-    if ((step === 1 || step === 3 || step === 4) && isBreathingActive) {
+    if ((step === 1 || step === 3 || step === 4 || step === 6) && isBreathingActive) {
       interval = setInterval(() => {
         setBreathTimer((t) => {
           if (t > 1) return t - 1;
@@ -329,6 +329,25 @@ export default function ReleaseSessionScreen() {
 
   const renderStep6 = () => (
     <div className="flex flex-col items-center w-full animate-in fade-in">
+      <h2 className="text-[22px] font-extrabold text-[#6366F1] mb-4 text-center">Ikhlas Seperti Napas</h2>
+      <p className="text-lg text-[#F8FAFC] text-center mb-8 leading-relaxed font-semibold">
+        "Ya Allah mudahkan ikhlasku semudah nafasku"
+      </p>
+      <div className="w-[260px] h-[260px] flex items-center justify-center relative mb-[50px]">
+        <BreathingCircle active={isBreathingActive} />
+        <div className="flex flex-col items-center z-10">
+          <span className="text-[56px] font-black text-white mb-2.5">{breathTimer}</span>
+          <span className="text-lg font-bold text-white text-center">{breathLabel}</span>
+        </div>
+      </div>
+      <button className="bg-[#4F46E5] px-10 py-[18px] rounded-[20px] shadow-lg shadow-[#4F46E5]/30" onClick={nextStep}>
+        <span className="text-white text-base font-bold">Lanjutkan</span>
+      </button>
+    </div>
+  );
+
+  const renderStep7 = () => (
+    <div className="flex flex-col items-center w-full animate-in fade-in">
       <h2 className="text-[22px] font-extrabold text-[#6366F1] mb-4 text-center">5. Serahkan pada Allah</h2>
       <span className="text-[64px] mb-6">✨</span>
 
@@ -365,7 +384,7 @@ export default function ReleaseSessionScreen() {
     </div>
   );
 
-  const renderStep7 = () => (
+  const renderStep8 = () => (
     <div className="flex flex-col items-center w-full animate-in fade-in">
       <h2 className="text-[22px] font-extrabold text-[#6366F1] mb-4 text-center">Selesai</h2>
       <div className="w-[100px] h-[100px] rounded-full bg-[#10B98120] flex items-center justify-center mb-10">
@@ -415,7 +434,7 @@ export default function ReleaseSessionScreen() {
         <button className="p-2" onClick={() => router.back()}>
           <svg className="w-7 h-7 text-[#94A3B8]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
         </button>
-        <ProgressIndicator current={step} total={7} />
+        <ProgressIndicator current={step} total={8} />
         <button className="p-2" onClick={toggleSound}>
           {isPlaying ? (
             <svg className="w-6 h-6 text-[#94A3B8]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072M17.95 6.05a8 8 0 010 11.9M6.5 8.8l4.3-3.1A1 1 0 0112 6.5v11a1 1 0 01-1.2.8L6.5 15.2H4a1 1 0 01-1-1v-4.4a1 1 0 011-1h2.5z" /></svg>
@@ -435,6 +454,7 @@ export default function ReleaseSessionScreen() {
           {step === 5 && renderStep5()}
           {step === 6 && renderStep6()}
           {step === 7 && renderStep7()}
+          {step === 8 && renderStep8()}
         </div>
       </div>
     </div>

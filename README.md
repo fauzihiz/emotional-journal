@@ -26,6 +26,7 @@ Fitur terapi mandiri terpandu dengan 5 tahapan utama:
 - **Izinkan perasaan itu ada**: Mengamati keberadaan emosi tanpa mencoba membendungnya.
 - **Rasakan, jangan dilawan**: Merasakan sensasi emosi di tubuh dengan ritme napas (Tarik-Tahan-Buang).
 - **Lepaskan, biarkan mengalir**: Menuliskan dan merilis beban emosi secara visual (Dissolve animation).
+- **Ikhlas Seperti Napas**: Menenangkan diri kembali dengan afirmasi "Ya Allah mudahkan ikhlasku semudah nafasku".
 - **Serahkan pada Allah**: Kepasrahan total dan refleksi spiritual untuk ketenangan batin.
 
 ### 3. Monetization & Security Gate

@@ -2,7 +2,7 @@
 
 Aplikasi *micro-journaling* berbasis Progressive Web App (PWA) yang dirancang untuk membantu pengguna melacak, merilis, dan memahami pola emosi harian dengan antarmuka yang tenang dan meditatif.
 
-![Emotional Journal Preview](EJ/app/icon.png)
+![Emotional Journal Preview](app/icon.png)
 
 ## ✨ Filosofi Desain
 "Emotional Journal" bukan sekadar aplikasi pencatatan. Ia adalah *safe space* digital. Kami menggunakan estetika **Warm and Minimalist**, tipografi yang elegan, serta mikro-antarmuka yang responsif untuk menciptakan pengalaman meditasi visual saat pengguna berinteraksi dengan emosi mereka.
@@ -33,18 +33,19 @@ Sistem aktivasi akun berbasis lisensi. Pengguna hanya dapat mengakses Dashboard 
 ### 4. Zero-Friction Logging
 Formulir input yang cepat dengan pilihan emosi berbasis *chip* warna-warni, memungkinkan pencatatan perasaan kurang dari 10 detik.
 
-## 📂 Struktur Folder Proyek
-- `EJ/app/` — Halaman utama, routing, dan logic SSR (App Router).
-- `EJ/components/` — Komponen UI premium (Modals, Calendar, Picker).
-- `EJ/hooks/` — Custom hooks untuk manajemen data emosi.
-- `EJ/lib/` — Hubungan API dan utilitas Supabase client/middleware.
-- `EJ/public/` — Aset audio meditasi, ikon aplikasi, dan manifest PWA.
-- `EJ/supabase/` — Skema database SQL, RLS Policies, dan Indexes.
+## 🛠️ Solusi Kendala Teknis (Troubleshooting)
+
+### 1. Kebocoran Data Cache (Account Switching)
+- **Masalah**: Data dari akun sebelumnya tetap terlihat saat pengguna lain login di browser yang sama.
+- **Solusi**: Mengimplementasikan **Query Key Partitioning** (menambahkan `userId` ke kunci cache) dan **Explicit Clearance** (memanggil `queryClient.clear()` pada alur logout).
+
+### 2. Build Failure (Vercel)
+- **Masalah**: Kegagalan build di Vercel karena struktur folder subdirektori.
+- **Solusi**: Memindahkan proyek Next.js dari folder `EJ/` langsung ke **root directory** agar terdeteksi secara otomatis oleh Vercel.
 
 ## 🚀 Instalasi & Pengembangan
 1. **Clone & Install**:
    ```bash
-   cd EJ
    npm install
    ```
 2. **Setup Env**: Pastikan Anda memiliki kredensial Supabase di `.env`.
@@ -52,20 +53,10 @@ Formulir input yang cepat dengan pilihan emosi berbasis *chip* warna-warni, memu
    ```bash
    npm run dev
    ```
-4. **Build Production**:  
-   Untuk memvalidasi performa PWA:
+4. **Build Production**: 
    ```bash
    npm run build
    ```
-
-## 🛠️ Solusi Kendala Teknis (Troubleshooting)
-
-### 1. Kebocoran Data Cache (Account Switching)
-- **Masalah**: Data dari akun sebelumnya tetap terlihat saat pengguna lain login di browser yang sama.
-- **Penyebab**: TanStack Query Persistence menyimpan cache di `localStorage` dengan kunci statis (misal: `['entries', month, year]`), yang tidak membedakan ID pengguna.
-- **Solusi**:
-    - **Query Key Partitioning**: Menambahkan `userId` ke dalam setiap kunci query (misal: `['entries', userId, month, year]`). Ini mengisolasi data di level penyimpanan.
-    - **Explicit Cache Clearance**: Mengintegrasikan `queryClient.clear()` pada setiap fungsi logout untuk memastikan memori cache segera dihapus saat sesi berakhir.
 
 ---
 *Developed with focus on Mental Health and UX Excellence.*  

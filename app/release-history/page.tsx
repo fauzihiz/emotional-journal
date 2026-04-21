@@ -40,7 +40,7 @@ export default function ReleaseHistoryPage() {
         <div className="w-10" />
       </div>
 
-      {loading ? (
+      {isLoading ? (
         <div className="flex-1 flex items-center justify-center p-8">
           <span className="animate-spin h-8 w-8 border-4 border-[#4F46E5] border-t-transparent rounded-full" />
         </div>

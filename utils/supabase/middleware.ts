@@ -43,7 +43,8 @@ export async function updateSession(request: NextRequest) {
   }
 
   if (user && !isAuthPage && !isActivatePage) {
-    // Check if user is activated
+    // Check if user is activated (TEMPORARILY DISABLED as per user request)
+    /*
     const { data: activation } = await supabase
       .from('activation_codes')
       .select('id')
@@ -55,6 +56,7 @@ export async function updateSession(request: NextRequest) {
       url.pathname = '/activate'
       return NextResponse.redirect(url)
     }
+    */
   }
 
   return supabaseResponse

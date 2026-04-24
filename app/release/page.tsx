@@ -66,14 +66,24 @@ export default function ReleaseSessionScreen() {
 
   // Audio
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(true);
 
   useEffect(() => {
     const audio = new Audio('/audio/calm.mp3');
     audio.loop = true;
     audio.volume = 0.5;
     audioRef.current = audio;
-    return () => { audio.pause(); audio.src = ''; };
+
+    // Attempt to play by default
+    audio.play().catch((err) => {
+      console.warn('Autoplay was prevented by the browser. Sound will start after user interaction.', err);
+      setIsPlaying(false);
+    });
+
+    return () => {
+      audio.pause();
+      audio.src = '';
+    };
   }, []);
 
   const toggleSound = () => {

@@ -28,6 +28,8 @@ Fitur terapi mandiri terpandu dengan 5 tahapan utama:
 - **Lepaskan, biarkan mengalir**: Menuliskan dan merilis beban emosi secara visual (Dissolve animation).
 - **Ikhlas Seperti Napas**: Menenangkan diri kembali dengan afirmasi "Ya Allah mudahkan ikhlasku semudah nafasku".
 - **Serahkan pada Allah**: Kepasrahan total dan refleksi spiritual untuk ketenangan batin.
+- **Audio Meditatif**: Dilengkapi dengan *background sound* yang otomatis diputar untuk membantu mencapai kondisi rileks lebih cepat.
+
 
 ### 3. Monetization & Security Gate
 Sistem aktivasi akun berbasis lisensi yang **diperketat melalui Middleware**:

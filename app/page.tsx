@@ -185,12 +185,18 @@ export default function DashboardScreen() {
       <a
         href="/ebook/ebook-tenang.pdf"
         download
-        className="fixed left-6 bottom-6 w-16 h-16 rounded-full bg-[#10B981] flex items-center justify-center shadow-lg shadow-[#10B981]/40 hover:bg-[#059669] transition-colors z-40"
+        className="fixed left-6 bottom-6 h-14 pl-4 pr-5 rounded-full bg-[#10B981] flex items-center gap-3 shadow-lg shadow-[#10B981]/40 hover:bg-[#059669] transition-all z-40 group"
         title="Download Ebook"
       >
-        <svg className="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-        </svg>
+        <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
+          <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+        </div>
+        <div className="flex flex-col">
+          <span className="text-[11px] font-bold text-white leading-tight">Download Ebook</span>
+          <span className="text-[9px] text-white/80 leading-tight font-medium uppercase">ebook-tenang.pdf (24.949 KB)</span>
+        </div>
       </a>
 
       {/* FAB */}

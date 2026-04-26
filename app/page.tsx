@@ -9,6 +9,7 @@ import { fetchEntriesByMonth } from '@/lib/api/entries';
 import HeatmapCalendar from '@/components/HeatmapCalendar';
 import QuickLogModal from '@/components/QuickLogModal';
 import DayDetailModal from '@/components/DayDetailModal';
+import PwaInstallButton from '@/components/PwaInstallButton';
 import Link from 'next/link';
 
 export default function DashboardScreen() {
@@ -134,12 +135,15 @@ export default function DashboardScreen() {
               {userName}
             </h1>
           </div>
-          <button
-            onClick={handleSignOut}
-            className="p-2.5 rounded-[14px] bg-white shadow-sm hover:bg-[#F8FAFC] transition-colors"
-          >
-            <svg className="w-5 h-5 text-[#64748B]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
-          </button>
+          <div className="flex items-center gap-2">
+            <PwaInstallButton />
+            <button
+              onClick={handleSignOut}
+              className="p-2.5 rounded-[14px] bg-white shadow-sm hover:bg-[#F8FAFC] transition-colors"
+            >
+              <svg className="w-5 h-5 text-[#64748B]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+            </button>
+          </div>
         </div>
 
         {/* Therapy Row */}

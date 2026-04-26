@@ -7,6 +7,7 @@ export default function LoginPage() {
   const supabase = createClient();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [mode, setMode] = useState<'login' | 'register'>('login');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
@@ -34,6 +35,10 @@ export default function LoginPage() {
   };
 
   const handleEmailSignUp = async () => {
+    if (!email || !password) {
+      setError('Masukkan email dan password terlebih dahulu');
+      return;
+    }
     setLoading(true);
     setError('');
     setMessage('');
@@ -79,6 +84,41 @@ export default function LoginPage() {
 
         {/* Form */}
         <div className="flex flex-col gap-4">
+          <div className="flex items-center gap-2 bg-white rounded-2xl p-1 shadow-sm">
+            <button
+              className={[
+                'flex-1 h-10 rounded-xl text-sm font-bold transition-colors',
+                mode === 'login'
+                  ? 'bg-[#4F46E5] text-white'
+                  : 'text-[#475569] hover:bg-[#F8FAFC]',
+              ].join(' ')}
+              onClick={() => {
+                setMode('login');
+                setError('');
+                setMessage('');
+              }}
+              disabled={loading}
+            >
+              Masuk
+            </button>
+            <button
+              className={[
+                'flex-1 h-10 rounded-xl text-sm font-bold transition-colors',
+                mode === 'register'
+                  ? 'bg-[#4F46E5] text-white'
+                  : 'text-[#475569] hover:bg-[#F8FAFC]',
+              ].join(' ')}
+              onClick={() => {
+                setMode('register');
+                setError('');
+                setMessage('');
+              }}
+              disabled={loading}
+            >
+              Daftar
+            </button>
+          </div>
+
           {error && (
             <div className="bg-[#FEE2E2] p-3 rounded-lg">
               <p className="text-[#DC2626] text-sm">{error}</p>
@@ -115,7 +155,7 @@ export default function LoginPage() {
 
           <button
             className="flex items-center justify-center h-[60px] bg-[#4F46E5] rounded-2xl mt-3 shadow-lg shadow-[#4F46E5]/20 hover:bg-[#4338CA] transition-colors disabled:opacity-60"
-            onClick={handleEmailSignIn}
+            onClick={mode === 'login' ? handleEmailSignIn : handleEmailSignUp}
             disabled={loading}
           >
             {loading ? (
@@ -123,18 +163,38 @@ export default function LoginPage() {
             ) : (
               <>
                 <svg className="w-5 h-5 text-white mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" /></svg>
-                <span className="text-white text-base font-bold">Masuk</span>
+                <span className="text-white text-base font-bold">
+                  {mode === 'login' ? 'Masuk' : 'Daftar Akun'}
+                </span>
               </>
             )}
           </button>
 
-          <button
-            className="h-12 text-[#4F46E5] font-semibold text-[15px] hover:underline"
-            onClick={handleEmailSignUp}
-            disabled={loading}
-          >
-            Daftar Akun Baru
-          </button>
+          {mode === 'login' ? (
+            <button
+              className="h-12 text-[#4F46E5] font-semibold text-[15px] hover:underline"
+              onClick={() => {
+                setMode('register');
+                setError('');
+                setMessage('');
+              }}
+              disabled={loading}
+            >
+              Daftar Akun Baru
+            </button>
+          ) : (
+            <button
+              className="h-12 text-[#4F46E5] font-semibold text-[15px] hover:underline"
+              onClick={() => {
+                setMode('login');
+                setError('');
+                setMessage('');
+              }}
+              disabled={loading}
+            >
+              Sudah punya akun? Masuk
+            </button>
+          )}
 
           {/* Divider */}
           <div className="flex items-center my-4">

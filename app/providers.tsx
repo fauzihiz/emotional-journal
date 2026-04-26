@@ -5,6 +5,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { useState } from 'react'
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
 import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister'
+import PwaInstallButton from '@/components/PwaInstallButton'
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -31,6 +32,9 @@ export default function Providers({ children }: { children: React.ReactNode }) {
       client={queryClient}
       persistOptions={{ persister }}
     >
+      <div className="fixed right-4 top-4 z-50">
+        <PwaInstallButton />
+      </div>
       {children}
       <ReactQueryDevtools initialIsOpen={false} />
     </PersistQueryClientProvider>

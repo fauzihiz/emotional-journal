@@ -32,7 +32,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
       client={queryClient}
       persistOptions={{ persister }}
     >
-      <div className="fixed right-4 top-4 z-50">
+      <div className="fixed right-4 top-4 z-[9999]">
         <PwaInstallButton />
       </div>
       {children}

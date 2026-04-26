@@ -80,6 +80,7 @@ export default function PwaInstallButton() {
         variant={canPrompt ? "default" : "outline"}
         size="sm"
         onClick={onInstallClick}
+        className="shadow-md bg-white"
       >
         Install app
       </Button>
